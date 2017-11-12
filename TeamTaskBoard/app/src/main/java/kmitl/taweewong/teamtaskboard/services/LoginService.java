@@ -14,18 +14,18 @@ import java.util.Arrays;
 
 public class LoginService {
 
-    public interface OnLoginFacebookComplete {
+    public interface OnLoginFacebookCompleteListener {
         void onLoginFacebookSuccess(Profile facebookProfile);
         void onLoginFacebookFailed();
         void onLoginFacebookCancelled();
     }
 
     private Activity activity;
-    private OnLoginFacebookComplete listener;
+    private OnLoginFacebookCompleteListener listener;
     private Profile facebookProfile;
     private AccessToken accessToken;
 
-    public LoginService(Activity activity, CallbackManager callbackManager, OnLoginFacebookComplete listener) {
+    public LoginService(Activity activity, CallbackManager callbackManager, OnLoginFacebookCompleteListener listener) {
         this.activity = activity;
         this.listener = listener;
         accessToken = AccessToken.getCurrentAccessToken();

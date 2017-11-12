@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 
-public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookComplete {
+public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener {
     LoginService loginService;
     CallbackManager callbackManager;
 
