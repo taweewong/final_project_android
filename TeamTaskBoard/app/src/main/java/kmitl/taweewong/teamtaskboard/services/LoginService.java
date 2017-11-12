@@ -57,7 +57,7 @@ public class LoginService {
         LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("email", "public_profile"));
     }
 
-    public boolean isAlreadyLoginFacebook() {
+    public boolean isAuthenticatedFacebook() {
         return accessToken != null;
     }
 }
