@@ -20,14 +20,17 @@ public class LoginService {
         void onLoginFacebookCancelled();
     }
 
+    public interface OnVerifyFacebookAuthenticationListener {
+        void onAuthenticated();
+    }
+
     private Activity activity;
-    private OnLoginFacebookCompleteListener listener;
+    private OnLoginFacebookCompleteListener loginFacebookListener;
     private Profile facebookProfile;
     private AccessToken accessToken;
 
-    public LoginService(Activity activity, CallbackManager callbackManager, OnLoginFacebookCompleteListener listener) {
+    public LoginService(Activity activity, CallbackManager callbackManager) {
         this.activity = activity;
-        this.listener = listener;
         accessToken = AccessToken.getCurrentAccessToken();
         setupFacebookLoginManager(callbackManager);
     }
@@ -38,26 +41,30 @@ public class LoginService {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         facebookProfile = Profile.getCurrentProfile();
-                        listener.onLoginFacebookSuccess(facebookProfile);
+                        loginFacebookListener.onLoginFacebookSuccess(facebookProfile);
                     }
 
                     @Override
                     public void onCancel() {
-                        listener.onLoginFacebookCancelled();
+                        loginFacebookListener.onLoginFacebookCancelled();
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
-                        listener.onLoginFacebookFailed();
+                        loginFacebookListener.onLoginFacebookFailed();
                     }
                 });
     }
 
-    public void loginFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("email", "public_profile"));
+    public void loginFacebook(OnLoginFacebookCompleteListener listener) {
+        this.loginFacebookListener = listener;
+        LoginManager.getInstance().logInWithReadPermissions(activity,
+                Arrays.asList("email", "public_profile"));
     }
 
-    public boolean isAuthenticatedFacebook() {
-        return accessToken != null;
+    public void verifyFacebookAuthentication(OnVerifyFacebookAuthenticationListener authenticationListener) {
+        if (accessToken != null) {
+            authenticationListener.onAuthenticated();
+        }
     }
 }
