@@ -29,12 +29,23 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         callbackManager = CallbackManager.Factory.create();
         loginService = new LoginService(this, callbackManager, this);
 
+        verifyAuthenticated();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void verifyAuthenticated() {
+        boolean isAuthenticated = loginService.isAuthenticatedFacebook();
+
+        if (isAuthenticated) {
+            Toast.makeText(this, "Authenticated", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, " Not authenticated yet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.facebookLoginButton)
