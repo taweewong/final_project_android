@@ -13,11 +13,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
+import kmitl.taweewong.teamtaskboard.utilities.ProgressSpinner;
 
 public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener,
     LoginService.OnVerifyFacebookAuthenticationListener {
     LoginService loginService;
     CallbackManager callbackManager;
+    ProgressSpinner progressSpinner;
 
     @BindView(R.id.facebookLoginButton) Button facebookLoginButton;
 
@@ -29,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
 
         callbackManager = CallbackManager.Factory.create();
         loginService = new LoginService(this, callbackManager);
+        progressSpinner = new ProgressSpinner(this);
 
         loginService.verifyFacebookAuthentication(this);
     }
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     @OnClick(R.id.facebookLoginButton)
     public void loginWithFacebook() {
         loginService.loginFacebook(this);
+        progressSpinner.show();
     }
 
     @Override
@@ -52,15 +56,18 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     @Override
     public void onLoginFacebookSuccess(Profile facebookProfile) {
         Toast.makeText(this, "login: " + facebookProfile.getFirstName(), Toast.LENGTH_SHORT).show();
+        progressSpinner.hide();
     }
 
     @Override
     public void onLoginFacebookFailed() {
         Toast.makeText(this, "cancel", Toast.LENGTH_SHORT).show();
+        progressSpinner.hide();
     }
 
     @Override
     public void onLoginFacebookCancelled() {
         Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
+        progressSpinner.hide();
     }
 }
