@@ -14,7 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 
-public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener {
+public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener,
+    LoginService.OnVerifyFacebookAuthenticationListener {
     LoginService loginService;
     CallbackManager callbackManager;
 
@@ -27,9 +28,9 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
-        loginService = new LoginService(this, callbackManager, this);
+        loginService = new LoginService(this, callbackManager);
 
-        verifyAuthenticated();
+        loginService.verifyFacebookAuthentication(this);
     }
 
     @Override
@@ -38,19 +39,14 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void verifyAuthenticated() {
-        boolean isAuthenticated = loginService.isAuthenticatedFacebook();
-
-        if (isAuthenticated) {
-            Toast.makeText(this, "Authenticated", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, " Not authenticated yet", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @OnClick(R.id.facebookLoginButton)
     public void loginWithFacebook() {
-        loginService.loginFacebook();
+        loginService.loginFacebook(this);
+    }
+
+    @Override
+    public void onAuthenticated() {
+        Toast.makeText(this, "Authenticated", Toast.LENGTH_SHORT).show();
     }
 
     @Override
