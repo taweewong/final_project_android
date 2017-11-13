@@ -32,7 +32,7 @@ import kmitl.taweewong.teamtaskboard.models.User;
 public class LoginService {
 
     public interface OnLoginFacebookCompleteListener {
-        void onLoginFacebookSuccess(Profile facebookProfile);
+        void onLoginFacebookSuccess(User currentUser);
         void onLoginFacebookFailed(String message);
         void onLoginFacebookCancelled();
     }
@@ -40,6 +40,8 @@ public class LoginService {
     public interface OnVerifyFacebookAuthenticationListener {
         void onAuthenticated();
     }
+
+    private final String CHILD_USERS = "users";
 
     private Activity activity;
     private OnLoginFacebookCompleteListener loginFacebookListener;
@@ -110,14 +112,14 @@ public class LoginService {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("users").hasChild(uid)) {
-                    Toast.makeText(activity, "Welcome back to TeamTaskBoard", Toast.LENGTH_SHORT).show();
+                if (dataSnapshot.child(CHILD_USERS).hasChild(uid)) {
+                    User existUser = dataSnapshot.child(CHILD_USERS).child(uid).getValue(User.class);
+                    loginFacebookListener.onLoginFacebookSuccess(existUser);
                 } else {
                     User newUser = createNewUser(profile);
-                    myRef.child("users").child(uid).setValue(newUser);
+                    myRef.child(CHILD_USERS).child(uid).setValue(newUser);
+                    loginFacebookListener.onLoginFacebookSuccess(newUser);
                 }
-
-                loginFacebookListener.onLoginFacebookSuccess(facebookProfile);
             }
 
             @Override
