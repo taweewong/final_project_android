@@ -12,6 +12,7 @@ import com.facebook.Profile;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kmitl.taweewong.teamtaskboard.models.User;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 import kmitl.taweewong.teamtaskboard.utilities.ProgressSpinner;
 
@@ -54,8 +55,8 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     }
 
     @Override
-    public void onLoginFacebookSuccess(Profile facebookProfile) {
-        Toast.makeText(this, "login: " + facebookProfile.getFirstName(), Toast.LENGTH_SHORT).show();
+    public void onLoginFacebookSuccess(User user) {
+        Toast.makeText(this, "login: " + user.getFirstName(), Toast.LENGTH_SHORT).show();
         progressSpinner.hide();
     }
 
