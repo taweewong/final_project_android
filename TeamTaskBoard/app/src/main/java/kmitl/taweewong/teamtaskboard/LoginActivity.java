@@ -60,14 +60,14 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     }
 
     @Override
-    public void onLoginFacebookFailed() {
-        Toast.makeText(this, "cancel", Toast.LENGTH_SHORT).show();
+    public void onLoginFacebookFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         progressSpinner.hide();
     }
 
     @Override
     public void onLoginFacebookCancelled() {
-        Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Login cancelled", Toast.LENGTH_SHORT).show();
         progressSpinner.hide();
     }
 }
