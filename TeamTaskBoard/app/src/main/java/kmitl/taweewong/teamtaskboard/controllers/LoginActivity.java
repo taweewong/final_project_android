@@ -1,4 +1,4 @@
-package kmitl.taweewong.teamtaskboard;
+package kmitl.taweewong.teamtaskboard.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,11 +7,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.Profile;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.models.User;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 import kmitl.taweewong.teamtaskboard.utilities.ProgressSpinner;
