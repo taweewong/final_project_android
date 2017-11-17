@@ -2,10 +2,10 @@ package kmitl.taweewong.teamtaskboard.models;
 
 import java.util.List;
 
-public class Board {
+public class Project {
     private String name;
     private List<String> members;
-    private Tasks tasks;
+    private List<BacklogItem> backlogItems;
 
     public String getName() {
         return name;
@@ -21,13 +21,5 @@ public class Board {
 
     public void setMembers(List<String> members) {
         this.members = members;
-    }
-
-    public Tasks getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Tasks tasks) {
-        this.tasks = tasks;
     }
 }
