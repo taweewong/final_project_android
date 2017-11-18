@@ -5,7 +5,7 @@ import java.util.List;
 public class User {
     private String firstName;
     private String lastName;
-    private List<String> boards;
+    private List<String> projects;
 
     public String getFirstName() {
         return firstName;
@@ -23,11 +23,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<String> getBoards() {
-        return boards;
+    public List<String> getProjects() {
+        return projects;
     }
 
-    public void setBoards(List<String> boards) {
-        this.boards = boards;
+    public void setProjects(List<String> projects) {
+        this.projects = projects;
     }
 }
