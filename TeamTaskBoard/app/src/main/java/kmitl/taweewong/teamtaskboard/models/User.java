@@ -10,6 +10,8 @@ public class User implements Parcelable {
     private String lastName;
     private List<String> projects;
 
+    public static final String USER_CLASS_KEY = "user";
+
     public User() {
 
     }
