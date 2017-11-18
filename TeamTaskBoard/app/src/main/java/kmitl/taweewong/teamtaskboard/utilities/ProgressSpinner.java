@@ -31,8 +31,8 @@ public class ProgressSpinner {
         rotateLoading.start();
     }
 
-    public void hide() {
-        progressDialog.hide();
+    public void dismiss() {
+        progressDialog.dismiss();
         rotateLoading.stop();
     }
 }

@@ -35,10 +35,7 @@ public class LoginService {
         void onLoginFacebookSuccess(User currentUser);
         void onLoginFacebookFailed(String message);
         void onLoginFacebookCancelled();
-    }
-
-    public interface OnVerifyFacebookAuthenticationListener {
-        void onAuthenticated();
+        void onUnauthorized();
     }
 
     private final String CHILD_USERS = "users";
@@ -82,9 +79,12 @@ public class LoginService {
                 Arrays.asList("email", "public_profile"));
     }
 
-    public void verifyFacebookAuthentication(OnVerifyFacebookAuthenticationListener authenticationListener) {
+    public void verifyFacebookAuthentication(OnLoginFacebookCompleteListener listener) {
         if (accessToken != null) {
-            authenticationListener.onAuthenticated();
+            this.loginFacebookListener = listener;
+            handleFacebookAccessToken(accessToken);
+        } else {
+            listener.onUnauthorized();
         }
     }
 
