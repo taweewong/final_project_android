@@ -12,6 +12,10 @@ public class Project implements Parcelable {
 
     public static final String PROJECT_CLASS_KEY = "project";
 
+    public Project() {
+
+    }
+
     private Project(Parcel in) {
         name = in.readString();
         members = in.createStringArrayList();
