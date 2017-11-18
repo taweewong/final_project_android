@@ -1,4 +1,4 @@
-package kmitl.taweewong.teamtaskboard.controllers;
+package kmitl.taweewong.teamtaskboard.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
