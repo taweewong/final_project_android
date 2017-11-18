@@ -1,4 +1,4 @@
-package kmitl.taweewong.teamtaskboard;
+package kmitl.taweewong.teamtaskboard.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,16 +7,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.Profile;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kmitl.taweewong.teamtaskboard.R;
+import kmitl.taweewong.teamtaskboard.models.User;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 import kmitl.taweewong.teamtaskboard.utilities.ProgressSpinner;
 
-public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener,
-    LoginService.OnVerifyFacebookAuthenticationListener {
+import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
+
+public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener {
     LoginService loginService;
     CallbackManager callbackManager;
     ProgressSpinner progressSpinner;
@@ -33,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         loginService = new LoginService(this, callbackManager);
         progressSpinner = new ProgressSpinner(this);
 
+        progressSpinner.show();
         loginService.verifyFacebookAuthentication(this);
     }
 
@@ -49,25 +52,34 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     }
 
     @Override
-    public void onAuthenticated() {
-        Toast.makeText(this, "Authenticated", Toast.LENGTH_SHORT).show();
+    public void onLoginFacebookSuccess(User user) {
+        Toast.makeText(this, "login: " + user.getFirstName(), Toast.LENGTH_SHORT).show();
+        progressSpinner.dismiss();
+        startProjectActivity(user);
     }
 
     @Override
-    public void onLoginFacebookSuccess(Profile facebookProfile) {
-        Toast.makeText(this, "login: " + facebookProfile.getFirstName(), Toast.LENGTH_SHORT).show();
-        progressSpinner.hide();
-    }
-
-    @Override
-    public void onLoginFacebookFailed() {
-        Toast.makeText(this, "cancel", Toast.LENGTH_SHORT).show();
-        progressSpinner.hide();
+    public void onLoginFacebookFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        progressSpinner.dismiss();
     }
 
     @Override
     public void onLoginFacebookCancelled() {
-        Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
-        progressSpinner.hide();
+        Toast.makeText(this, "Login cancelled", Toast.LENGTH_SHORT).show();
+        progressSpinner.dismiss();
+    }
+
+    @Override
+    public void onUnauthorized() {
+        Toast.makeText(this, "You haven't login yet", Toast.LENGTH_SHORT).show();
+        progressSpinner.dismiss();
+    }
+
+    private void startProjectActivity(User user) {
+        Intent intent = new Intent(this, ProjectActivity.class);
+        intent.putExtra(USER_CLASS_KEY, user);
+        startActivity(intent);
+        finish();
     }
 }
