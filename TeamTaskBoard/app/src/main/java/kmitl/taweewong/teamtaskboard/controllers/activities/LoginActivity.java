@@ -16,8 +16,7 @@ import kmitl.taweewong.teamtaskboard.models.User;
 import kmitl.taweewong.teamtaskboard.services.LoginService;
 import kmitl.taweewong.teamtaskboard.utilities.ProgressSpinner;
 
-public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener,
-    LoginService.OnVerifyFacebookAuthenticationListener {
+public class LoginActivity extends AppCompatActivity implements LoginService.OnLoginFacebookCompleteListener {
     LoginService loginService;
     CallbackManager callbackManager;
     ProgressSpinner progressSpinner;
@@ -34,6 +33,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         loginService = new LoginService(this, callbackManager);
         progressSpinner = new ProgressSpinner(this);
 
+        progressSpinner.show();
         loginService.verifyFacebookAuthentication(this);
     }
 
@@ -50,14 +50,10 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     }
 
     @Override
-    public void onAuthenticated() {
-        Toast.makeText(this, "Authenticated", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onLoginFacebookSuccess(User user) {
         Toast.makeText(this, "login: " + user.getFirstName(), Toast.LENGTH_SHORT).show();
         progressSpinner.hide();
+        startProjectActivity();
     }
 
     @Override
@@ -70,5 +66,17 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     public void onLoginFacebookCancelled() {
         Toast.makeText(this, "Login cancelled", Toast.LENGTH_SHORT).show();
         progressSpinner.hide();
+    }
+
+    @Override
+    public void onUnauthorized() {
+        Toast.makeText(this, "You haven't login yet", Toast.LENGTH_SHORT).show();
+        progressSpinner.hide();
+    }
+
+    private void startProjectActivity() {
+        Intent intent = new Intent(this, ProjectActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
