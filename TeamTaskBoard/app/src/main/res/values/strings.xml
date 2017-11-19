@@ -7,4 +7,5 @@
     <string name="fb_login_protocol_scheme">fb500545806995257</string>
     <string name="project_name_label">Project name</string>
     <string name="add_project_button">Add Project</string>
+    <string name="add_project_menu">Add Project</string>
 </resources>
