@@ -20,7 +20,8 @@ import kmitl.taweewong.teamtaskboard.services.ProjectQueryService;
 
 import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
-public class ProjectActivity extends AppCompatActivity implements ProjectQueryService.OnQueryProjectsCompleteListener {
+public class ProjectActivity extends AppCompatActivity implements
+        ProjectQueryService.OnQueryProjectsCompleteListener, AddProjectFragment.OnAddProjectCompleteListener {
     ProjectQueryService projectQueryService;
     ArrayList<Project> projects;
 
@@ -68,6 +69,11 @@ public class ProjectActivity extends AppCompatActivity implements ProjectQuerySe
     @Override
     public void onQueryProjectsFailed() {
         Toast.makeText(this, "Query Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAddProjectComplete() {
+        getSupportFragmentManager().popBackStack();
     }
 
     private void initializeFragment(ArrayList<Project> projects) {
