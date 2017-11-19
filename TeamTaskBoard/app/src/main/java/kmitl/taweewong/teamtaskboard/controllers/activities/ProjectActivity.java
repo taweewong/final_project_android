@@ -1,14 +1,18 @@
 package kmitl.taweewong.teamtaskboard.controllers.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
+import kmitl.taweewong.teamtaskboard.controllers.fragments.AddProjectFragment;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowProjectsFragment;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.models.User;
@@ -38,10 +42,28 @@ public class ProjectActivity extends AppCompatActivity implements ProjectQuerySe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.project_page_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.addProjectMenu:
+                updateFragment(new AddProjectFragment());
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onQueryProjectsSuccess(ArrayList<Project> projects) {
         this.projects = projects;
         initializeFragment(projects);
     }
+
 
     @Override
     public void onQueryProjectsFailed() {
@@ -52,6 +74,14 @@ public class ProjectActivity extends AppCompatActivity implements ProjectQuerySe
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.projectFragmentContainer, ShowProjectsFragment.newInstance(projects))
+                .commit();
+    }
+
+    private void updateFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.projectFragmentContainer, fragment)
+                .addToBackStack(null)
                 .commit();
     }
 }
