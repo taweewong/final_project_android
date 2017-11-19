@@ -27,7 +27,7 @@ public class ProjectQueryService {
     public void queryProjects(final List<String> projectIds, final OnQueryProjectsCompleteListener listener) {
         final ArrayList<Project> projects = new ArrayList<>();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (String id : projectIds) {
