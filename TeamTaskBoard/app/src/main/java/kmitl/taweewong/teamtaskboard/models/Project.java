@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Project implements Parcelable {
+    private String projectId;
     private String name;
     private List<String> members;
     private List<BacklogItem> backlogItems;
@@ -17,12 +18,14 @@ public class Project implements Parcelable {
     }
 
     private Project(Parcel in) {
+        projectId = in.readString();
         name = in.readString();
         members = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(projectId);
         dest.writeString(name);
         dest.writeStringList(members);
     }
@@ -43,6 +46,14 @@ public class Project implements Parcelable {
             return new Project[size];
         }
     };
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
     public String getName() {
         return name;
