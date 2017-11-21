@@ -6,4 +6,9 @@
         android:title="@string/add_project_menu"
         android:icon="@drawable/ic_plus_symbol"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/logoutMenu"
+        android:title="@string/log_out_menu"
+        app:showAsAction="never"/>
 </menu>

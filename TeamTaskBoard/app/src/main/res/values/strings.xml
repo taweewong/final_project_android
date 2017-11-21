@@ -9,4 +9,5 @@
     <string name="add_project_label">Add new project</string>
     <string name="add_project_button">Add Project</string>
     <string name="add_project_menu">Add Project</string>
+    <string name="log_out_menu">Log out</string>
 </resources>

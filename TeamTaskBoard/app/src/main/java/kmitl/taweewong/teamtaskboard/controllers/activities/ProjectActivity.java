@@ -1,12 +1,15 @@
 package kmitl.taweewong.teamtaskboard.controllers.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +19,15 @@ import kmitl.taweewong.teamtaskboard.controllers.fragments.AddProjectFragment;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowProjectsFragment;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.models.User;
-import kmitl.taweewong.teamtaskboard.services.ProjectQueryService;
+import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
 public class ProjectActivity extends AppCompatActivity implements
-        ProjectQueryService.OnQueryProjectsCompleteListener, AddProjectFragment.OnAddProjectCompleteListener {
-    ProjectQueryService projectQueryService;
+        DatabaseService.OnQueryProjectsCompleteListener, AddProjectFragment.OnAddProjectCompleteListener {
+    DatabaseService projectQueryService;
     ArrayList<Project> projects;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +35,14 @@ public class ProjectActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_project);
         setTitle(getString(R.string.project_activity));
 
-        User user = getIntent().getParcelableExtra(USER_CLASS_KEY);
+        user = getIntent().getParcelableExtra(USER_CLASS_KEY);
         List<String> projectIds = new ArrayList<>();
 
         if (user.getProjects() != null) {
             projectIds = user.getProjects();
         }
 
-        projectQueryService = new ProjectQueryService();
+        projectQueryService = new DatabaseService();
         projectQueryService.queryProjects(projectIds, this);
     }
 
@@ -53,7 +57,11 @@ public class ProjectActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addProjectMenu:
-                updateFragment(new AddProjectFragment());
+                replaceAddProjectFragment();
+                break;
+            case R.id.logoutMenu:
+                logout();
+                startLoginActivity();
         }
 
         return super.onOptionsItemSelected(item);
@@ -65,14 +73,14 @@ public class ProjectActivity extends AppCompatActivity implements
         initializeFragment(projects);
     }
 
-
     @Override
     public void onQueryProjectsFailed() {
         Toast.makeText(this, "Query Failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onAddProjectComplete() {
+    public void onAddProjectComplete(Project project) {
+        this.projects.add(project);
         getSupportFragmentManager().popBackStack();
     }
 
@@ -83,11 +91,20 @@ public class ProjectActivity extends AppCompatActivity implements
                 .commit();
     }
 
-    private void updateFragment(Fragment fragment) {
+    private void replaceAddProjectFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.projectFragmentContainer, fragment)
+                .replace(R.id.projectFragmentContainer, AddProjectFragment.newInstance(user))
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
+    }
+
+    private void startLoginActivity() {
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }
