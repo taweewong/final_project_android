@@ -87,6 +87,7 @@ public class ProjectActivity extends AppCompatActivity implements
     private void initializeFragment(ArrayList<Project> projects) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
                 .add(R.id.projectFragmentContainer, ShowProjectsFragment.newInstance(projects))
                 .commit();
     }
@@ -94,6 +95,10 @@ public class ProjectActivity extends AppCompatActivity implements
     private void replaceAddProjectFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right)
                 .replace(R.id.projectFragmentContainer, AddProjectFragment.newInstance(user))
                 .addToBackStack(null)
                 .commit();
