@@ -2,7 +2,6 @@ package kmitl.taweewong.teamtaskboard.services;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -42,7 +41,6 @@ public class LoginService {
 
     private Activity activity;
     private OnLoginFacebookCompleteListener loginFacebookListener;
-    private Profile facebookProfile;
     private AccessToken accessToken;
     private FirebaseAuth firebaseAuth;
 
@@ -88,7 +86,7 @@ public class LoginService {
         }
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(final AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
@@ -96,8 +94,8 @@ public class LoginService {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            facebookProfile = Profile.getCurrentProfile();
-                            findFacebookUser(user.getUid(), facebookProfile);
+                            Profile facebookProfile = Profile.getCurrentProfile();
+                            findFacebookUser(user, facebookProfile);
                         } else {
                             loginFacebookListener.onLoginFacebookFailed(getAuthenticationTaskErrorMessage(task));
                         }
@@ -105,19 +103,19 @@ public class LoginService {
                 });
     }
 
-    private void findFacebookUser(final String uid, final Profile profile) {
+    private void findFacebookUser(final FirebaseUser user, final Profile profile) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference();
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(CHILD_USERS).hasChild(uid)) {
-                    User existUser = dataSnapshot.child(CHILD_USERS).child(uid).getValue(User.class);
+                if (dataSnapshot.child(CHILD_USERS).hasChild(user.getUid())) {
+                    User existUser = dataSnapshot.child(CHILD_USERS).child(user.getUid()).getValue(User.class);
                     loginFacebookListener.onLoginFacebookSuccess(existUser);
                 } else {
-                    User newUser = createNewUser(profile);
-                    myRef.child(CHILD_USERS).child(uid).setValue(newUser);
+                    User newUser = createNewUser(user, profile);
+                    myRef.child(CHILD_USERS).child(user.getUid()).setValue(newUser);
                     loginFacebookListener.onLoginFacebookSuccess(newUser);
                 }
             }
@@ -129,10 +127,12 @@ public class LoginService {
         });
     }
 
-    private User createNewUser(Profile profile) {
-        User newUser = new User();
+    private User createNewUser(FirebaseUser user, Profile profile) {
+        final User newUser = new User();
+        newUser.setEmail(user.getEmail());
         newUser.setFirstName(profile.getFirstName());
         newUser.setLastName(profile.getLastName());
+        newUser.setUserId(user.getUid());
 
         return newUser;
     }
