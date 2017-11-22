@@ -1,6 +1,5 @@
 package kmitl.taweewong.teamtaskboard.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +12,21 @@ import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.viewholders.BacklogItemViewHolder;
 
-public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHolder> {
+public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHolder> implements
+        View.OnClickListener, View.OnLongClickListener {
+
+    public interface OnClickBacklogItemListener {
+        void onClickBacklogItem(int position);
+        void onLongClickBacklogItem(int position);
+    }
+
     private List<BacklogItem> backlogItems;
     private RecyclerView parentRecyclerView;
-    private Context context;
+    private OnClickBacklogItemListener listener;
 
-    public BacklogItemAdapter(List<BacklogItem> backlogItems, Context context) {
+    public BacklogItemAdapter(List<BacklogItem> backlogItems, OnClickBacklogItemListener listener) {
         this.backlogItems = backlogItems;
-        this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -33,6 +39,8 @@ public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHold
     public BacklogItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.backlog_item_view, null, false);
+        itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(this);
 
         return new BacklogItemViewHolder(itemView);
     }
@@ -47,5 +55,18 @@ public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHold
     @Override
     public int getItemCount() {
         return backlogItems.size();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
+        listener.onClickBacklogItem(itemPosition);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
+        listener.onLongClickBacklogItem(itemPosition);
+        return true;
     }
 }
