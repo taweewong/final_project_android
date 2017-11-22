@@ -43,6 +43,7 @@ public class DatabaseService {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (String id : projectIds) {
+                            //TODO: fix database error!
                             projects.add(dataSnapshot.child(id).getValue(Project.class));
                         }
                         listener.onQueryProjectsSuccess(projects);
@@ -94,7 +95,16 @@ public class DatabaseService {
     }
 
     private void updateUserProject(List<String> projects, String userId, String projectId) {
+        if (projects == null) {
+            projects = new ArrayList<>();
+        }
+
         projects.add(projectId);
         databaseReference.child(CHILD_USERS).child(userId).child(CHILD_PROJECTS).setValue(projects);
+    }
+
+    public void addBacklogItem(BacklogItem backlogItem, String projectId) {
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
+                .push().setValue(backlogItem);
     }
 }
