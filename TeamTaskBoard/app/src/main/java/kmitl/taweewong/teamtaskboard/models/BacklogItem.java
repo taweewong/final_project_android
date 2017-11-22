@@ -1,6 +1,6 @@
 package kmitl.taweewong.teamtaskboard.models;
 
-class BacklogItem {
+public class BacklogItem {
     private String title;
     private Tasks tasks;
 
