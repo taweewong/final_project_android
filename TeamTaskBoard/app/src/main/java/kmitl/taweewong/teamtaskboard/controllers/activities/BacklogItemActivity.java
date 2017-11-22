@@ -14,13 +14,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import kmitl.taweewong.teamtaskboard.R;
+import kmitl.taweewong.teamtaskboard.controllers.fragments.AddBacklogItemFragment;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowBacklogItemsFragment;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 public class BacklogItemActivity extends AppCompatActivity implements
-        DatabaseService.OnQueryBacklogItemsCompleteListener {
+        DatabaseService.OnQueryBacklogItemsCompleteListener, AddBacklogItemFragment.OnAddBacklogItemCompleteListener {
     private ArrayList<BacklogItem> backlogItems;
     private Project project;
     private String projectId;
@@ -52,7 +53,7 @@ public class BacklogItemActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addProjectMenu:
-                Toast.makeText(this, "add item is in progress", Toast.LENGTH_SHORT).show();
+                replaceAddBacklogItemFragment();
                 break;
             case R.id.logoutMenu:
                 logout();
@@ -73,11 +74,29 @@ public class BacklogItemActivity extends AppCompatActivity implements
         Toast.makeText(this, "Query Failed", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onAddBacklogItemComplete(BacklogItem backlogItem) {
+        this.backlogItems.add(backlogItem);
+        getSupportFragmentManager().popBackStack();
+    }
+
     private void initializeFragment(ArrayList<BacklogItem> backlogItems) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
                 .add(R.id.backlogItemFragmentContainer, ShowBacklogItemsFragment.newInstance(backlogItems))
+                .commit();
+    }
+
+    private void replaceAddBacklogItemFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right)
+                .replace(R.id.backlogItemFragmentContainer, AddBacklogItemFragment.newInstance(project))
+                .addToBackStack(null)
                 .commit();
     }
 
