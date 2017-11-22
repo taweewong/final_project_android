@@ -6,7 +6,7 @@
     tools:context="kmitl.taweewong.teamtaskboard.controllers.activities.BacklogItemActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/itemFragmentContainer"
+        android:id="@+id/backlogItemFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
