@@ -102,6 +102,12 @@ public class BacklogItemActivity extends AppCompatActivity implements
         getSupportFragmentManager().popBackStack();
     }
 
+    @Override
+    public void onDeleteBacklogItemComplete(int position) {
+        this.backlogItems.remove(position);
+        getSupportFragmentManager().popBackStack();
+    }
+
     private void initializeFragment(ArrayList<BacklogItem> backlogItems) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
