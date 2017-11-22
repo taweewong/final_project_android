@@ -21,7 +21,7 @@ public class DatabaseService {
     }
 
     public interface OnQueryBacklogItemsCompleteListener {
-        void onQueryBacklogItemsSuccess(List<BacklogItem> backlogItems);
+        void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems);
         void onQueryBacklogItemsFailed();
     }
 
@@ -60,7 +60,7 @@ public class DatabaseService {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        List<BacklogItem> backlogItems = new ArrayList<>();
+                        ArrayList<BacklogItem> backlogItems = new ArrayList<>();
 
                         for (DataSnapshot backlogItemsSnapshot: dataSnapshot.getChildren()) {
                             backlogItems.add(backlogItemsSnapshot.getValue(BacklogItem.class));
