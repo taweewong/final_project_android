@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ public class EditBacklogItemFragment extends Fragment {
 
     public interface OnEditBacklogItemCompleteListener {
         void onEditBacklogItemComplete(int position, BacklogItem editedBacklogItem);
+        void onDeleteBacklogItemComplete(int position);
     }
 
     @BindView(R.id.editBacklogItemNameEditText) EditText editItemNameEditText;
@@ -66,6 +68,15 @@ public class EditBacklogItemFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.deleteBacklogItemMenu:
+                deleteBacklogItem();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_edit_backlog_item, container, false);
@@ -85,6 +96,12 @@ public class EditBacklogItemFragment extends Fragment {
 
         databaseService.editBacklogItem(editedItem, project.getProjectId(), position, project.getBacklogItems());
         listener.onEditBacklogItemComplete(position, editedItem);
+    }
+
+    private void deleteBacklogItem() {
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.deleteBacklogItem(project.getProjectId(), position, project.getBacklogItems());
+        listener.onDeleteBacklogItemComplete(position);
     }
 
     public void setOnEditBacklogItemCompleteListener(OnEditBacklogItemCompleteListener listener) {
