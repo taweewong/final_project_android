@@ -16,6 +16,7 @@ import java.util.List;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
+import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter.OnClickBacklogItemListener;
 
 import static kmitl.taweewong.teamtaskboard.models.BacklogItem.BACKLOG_ITEM_CLASS_KEY;
 
@@ -50,7 +51,7 @@ public class ShowBacklogItemsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems, getContext());
+        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems, (OnClickBacklogItemListener) getContext());
         RecyclerView recyclerView = view.findViewById(R.id.showBacklogItemsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
