@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -50,9 +52,17 @@ public class EditBacklogItemFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         project = getArguments().getParcelable(PROJECT_CLASS_KEY);
         position = getArguments().getInt(POSITION_KEY);
         setOnEditBacklogItemCompleteListener((OnEditBacklogItemCompleteListener) getActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.findItem(R.id.addBacklogItemMenu).setVisible(false);
+        menu.findItem(R.id.deleteBacklogItemMenu).setVisible(true);
     }
 
     @Override

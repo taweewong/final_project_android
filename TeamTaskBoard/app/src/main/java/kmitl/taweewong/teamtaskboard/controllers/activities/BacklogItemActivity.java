@@ -50,14 +50,15 @@ public class BacklogItemActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.project_page_menu, menu);
+        getMenuInflater().inflate(R.menu.backlog_item_menu, menu);
+        menu.findItem(R.id.deleteBacklogItemMenu).setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addProjectMenu:
+            case R.id.addBacklogItemMenu:
                 replaceAddBacklogItemFragment();
                 break;
             case R.id.logoutMenu:

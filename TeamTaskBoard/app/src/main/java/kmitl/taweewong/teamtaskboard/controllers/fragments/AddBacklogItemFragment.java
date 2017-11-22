@@ -56,7 +56,7 @@ public class AddBacklogItemFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.addProjectMenu).setVisible(false);
+        menu.findItem(R.id.addBacklogItemMenu).setVisible(false);
     }
 
     @Override
