@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
 
 public class DatabaseService {
@@ -19,10 +20,16 @@ public class DatabaseService {
         void onQueryProjectsFailed();
     }
 
+    public interface OnQueryBacklogItemsCompleteListener {
+        void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems);
+        void onQueryBacklogItemsFailed();
+    }
+
     private DatabaseReference databaseReference;
 
     private static final String CHILD_USERS = "users";
     private static final String CHILD_PROJECTS = "projects";
+    private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
 
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -31,20 +38,42 @@ public class DatabaseService {
     public void queryProjects(final List<String> projectIds, final OnQueryProjectsCompleteListener listener) {
         final ArrayList<Project> projects = new ArrayList<>();
 
-        databaseReference.child(CHILD_PROJECTS).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (String id : projectIds) {
-                    projects.add(dataSnapshot.child(id).getValue(Project.class));
-                }
-                listener.onQueryProjectsSuccess(projects);
-            }
+        databaseReference.child(CHILD_PROJECTS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (String id : projectIds) {
+                            projects.add(dataSnapshot.child(id).getValue(Project.class));
+                        }
+                        listener.onQueryProjectsSuccess(projects);
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                listener.onQueryProjectsFailed();
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onQueryProjectsFailed();
+                    }
+                });
+    }
+
+    public void queryBacklogItems(final String projectId, final OnQueryBacklogItemsCompleteListener listener) {
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<BacklogItem> backlogItems = new ArrayList<>();
+
+                        for (DataSnapshot backlogItemsSnapshot: dataSnapshot.getChildren()) {
+                            backlogItems.add(backlogItemsSnapshot.getValue(BacklogItem.class));
+                        }
+
+                        listener.onQueryBacklogItemsSuccess(backlogItems);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onQueryBacklogItemsFailed();
+                    }
+                });
     }
 
     public Project createNewUserProject(String name, String userId, List<String> projects) {

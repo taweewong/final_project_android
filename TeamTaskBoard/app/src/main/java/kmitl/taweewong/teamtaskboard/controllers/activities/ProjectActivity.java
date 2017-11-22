@@ -25,9 +25,8 @@ import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
 public class ProjectActivity extends AppCompatActivity implements
         DatabaseService.OnQueryProjectsCompleteListener, AddProjectFragment.OnAddProjectCompleteListener {
-    DatabaseService projectQueryService;
-    ArrayList<Project> projects;
-    User user;
+    private ArrayList<Project> projects;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class ProjectActivity extends AppCompatActivity implements
             projectIds = user.getProjects();
         }
 
-        projectQueryService = new DatabaseService();
+        DatabaseService projectQueryService = new DatabaseService();
         projectQueryService.queryProjects(projectIds, this);
     }
 

@@ -1,5 +1,6 @@
 package kmitl.taweewong.teamtaskboard.controllers.fragments;
 
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,23 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
-import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter;
-import kmitl.taweewong.teamtaskboard.models.Project;
+import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter;
+import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 
-import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
+import static kmitl.taweewong.teamtaskboard.models.BacklogItem.BACKLOG_ITEM_CLASS_KEY;
 
-public class ShowProjectsFragment extends Fragment {
-    private List<Project> projects;
+public class ShowBacklogItemsFragment extends Fragment {
+    List<BacklogItem> backlogItems;
 
-    public ShowProjectsFragment() {
+    public ShowBacklogItemsFragment() {
         // Required empty public constructor
     }
 
-    public static ShowProjectsFragment newInstance(ArrayList<Project> projects) {
+    public static ShowBacklogItemsFragment newInstance(ArrayList<BacklogItem> backlogItems) {
         Bundle args = new Bundle();
-        args.putParcelableArrayList(PROJECT_CLASS_KEY, projects);
-        
-        ShowProjectsFragment fragment = new ShowProjectsFragment();
+        args.putParcelableArrayList(BACKLOG_ITEM_CLASS_KEY, backlogItems);
+
+        ShowBacklogItemsFragment fragment = new ShowBacklogItemsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,22 +38,22 @@ public class ShowProjectsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        projects = getArguments().getParcelableArrayList(PROJECT_CLASS_KEY);
+        backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEM_CLASS_KEY);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_show_projects, container, false);
+        return inflater.inflate(R.layout.fragment_show_backlog_items, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ProjectItemAdapter projectItemAdapter = new ProjectItemAdapter(projects, getContext());
-        RecyclerView recyclerView = view.findViewById(R.id.showProjectsRecyclerView);
+        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems, getContext());
+        RecyclerView recyclerView = view.findViewById(R.id.showBacklogItemsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(projectItemAdapter);
+        recyclerView.setAdapter(backlogItemAdapter);
     }
 }
