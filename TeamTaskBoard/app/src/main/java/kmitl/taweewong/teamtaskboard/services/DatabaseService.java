@@ -109,4 +109,14 @@ public class DatabaseService {
         backlogItems.add(backlogItem);
         databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
     }
+
+    public void editBacklogItem(BacklogItem editedItem, String projectId, int position, List<BacklogItem> backlogItems) {
+        backlogItems.set(position, editedItem);
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+    }
+
+    public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
+        backlogItems.remove(position);
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+    }
 }

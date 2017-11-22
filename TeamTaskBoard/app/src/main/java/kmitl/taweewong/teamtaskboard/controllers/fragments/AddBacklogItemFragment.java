@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,16 +31,20 @@ public class AddBacklogItemFragment extends Fragment {
 
     @BindView(R.id.backlogItemNameEditText) EditText backlogItemNameEditText;
 
+    private String projectId;
+    private ArrayList<BacklogItem> backlogItems;
     private OnAddBacklogItemCompleteListener listener;
-    private Project project;
+
+    private static String BACKLOG_ITEMS_KEY = "backlogItems";
 
     public AddBacklogItemFragment() {
         // Required empty public constructor
     }
 
-    public static AddBacklogItemFragment newInstance(Project project) {
+    public static AddBacklogItemFragment newInstance(String projectId, ArrayList<BacklogItem> backlogItems) {
         Bundle args = new Bundle();
-        args.putParcelable(PROJECT_CLASS_KEY, project);
+        args.putString(PROJECT_CLASS_KEY, projectId);
+        args.putParcelableArrayList(BACKLOG_ITEMS_KEY, backlogItems);
 
         AddBacklogItemFragment fragment = new AddBacklogItemFragment();
         fragment.setArguments(args);
@@ -50,13 +56,14 @@ public class AddBacklogItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setOnAddBacklogItemCompleteListener((OnAddBacklogItemCompleteListener) getActivity());
-        project = getArguments().getParcelable(PROJECT_CLASS_KEY);
+        projectId = getArguments().getString(PROJECT_CLASS_KEY);
+        backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEMS_KEY);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.findItem(R.id.addProjectMenu).setVisible(false);
+        menu.findItem(R.id.addBacklogItemMenu).setVisible(false);
     }
 
     @Override
@@ -74,7 +81,7 @@ public class AddBacklogItemFragment extends Fragment {
 
         BacklogItem newBacklogItem = createNewBacklogItem(backlogItemTitle);
 
-        databaseService.addBacklogItem(newBacklogItem, project.getProjectId(), project.getBacklogItems());
+        databaseService.addBacklogItem(newBacklogItem, projectId, backlogItems);
         listener.onAddBacklogItemComplete(newBacklogItem);
     }
 

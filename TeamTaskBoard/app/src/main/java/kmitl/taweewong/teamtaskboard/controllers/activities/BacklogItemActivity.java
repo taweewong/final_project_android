@@ -14,14 +14,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import kmitl.taweewong.teamtaskboard.R;
+import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.AddBacklogItemFragment;
+import kmitl.taweewong.teamtaskboard.controllers.fragments.EditBacklogItemFragment;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowBacklogItemsFragment;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 public class BacklogItemActivity extends AppCompatActivity implements
-        DatabaseService.OnQueryBacklogItemsCompleteListener, AddBacklogItemFragment.OnAddBacklogItemCompleteListener {
+        DatabaseService.OnQueryBacklogItemsCompleteListener,
+        AddBacklogItemFragment.OnAddBacklogItemCompleteListener,
+        BacklogItemAdapter.OnClickBacklogItemListener,
+        EditBacklogItemFragment.OnEditBacklogItemCompleteListener {
     private ArrayList<BacklogItem> backlogItems;
     private Project project;
     private String projectId;
@@ -45,14 +50,15 @@ public class BacklogItemActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.project_page_menu, menu);
+        getMenuInflater().inflate(R.menu.backlog_item_menu, menu);
+        menu.findItem(R.id.deleteBacklogItemMenu).setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addProjectMenu:
+            case R.id.addBacklogItemMenu:
                 replaceAddBacklogItemFragment();
                 break;
             case R.id.logoutMenu:
@@ -66,7 +72,7 @@ public class BacklogItemActivity extends AppCompatActivity implements
     @Override
     public void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems) {
         this.backlogItems = backlogItems;
-        initializeFragment(backlogItems);
+        initializeFragment();
     }
 
     @Override
@@ -76,11 +82,30 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     @Override
     public void onAddBacklogItemComplete(BacklogItem backlogItem) {
-        this.backlogItems.add(backlogItem);
         getSupportFragmentManager().popBackStack();
     }
 
-    private void initializeFragment(ArrayList<BacklogItem> backlogItems) {
+    @Override
+    public void onClickBacklogItem(int position) {
+        Toast.makeText(this, "click " + backlogItems.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLongClickBacklogItem(int position) {
+        replaceEditBacklogItemFragment(position);
+    }
+
+    @Override
+    public void onEditBacklogItemComplete(int position, BacklogItem editedBacklogItem) {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onDeleteBacklogItemComplete(int position) {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    private void initializeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
@@ -95,7 +120,21 @@ public class BacklogItemActivity extends AppCompatActivity implements
                         R.anim.slide_out_to_left,
                         R.anim.slide_in_from_left,
                         R.anim.slide_out_to_right)
-                .replace(R.id.backlogItemFragmentContainer, AddBacklogItemFragment.newInstance(project))
+                .replace(R.id.backlogItemFragmentContainer,
+                        AddBacklogItemFragment.newInstance(projectId, backlogItems))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void replaceEditBacklogItemFragment(int position) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right)
+                .replace(R.id.backlogItemFragmentContainer,
+                        EditBacklogItemFragment.newInstance(projectId, backlogItems, position))
                 .addToBackStack(null)
                 .commit();
     }
