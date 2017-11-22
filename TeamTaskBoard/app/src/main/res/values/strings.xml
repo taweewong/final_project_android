@@ -13,4 +13,6 @@
     <string name="add_backlog_item_label">Add new Backlog item</string>
     <string name="backlog_item_title_hint">Backlog item title</string>
     <string name="add_backlog_item_button">Add Backlog item</string>
+    <string name="edit_backlog_item_label">Edit Backlog item</string>
+    <string name="edit_backlog_item_button">Edit Backlog item</string>
 </resources>
