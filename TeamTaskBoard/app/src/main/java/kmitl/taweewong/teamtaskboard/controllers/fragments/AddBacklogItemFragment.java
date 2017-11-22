@@ -20,7 +20,6 @@ import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
-import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
 public class AddBacklogItemFragment extends Fragment {
 
@@ -73,14 +72,19 @@ public class AddBacklogItemFragment extends Fragment {
         String backlogItemTitle = backlogItemNameEditText.getText().toString();
         DatabaseService databaseService = new DatabaseService();
 
-        BacklogItem backlogItem = new BacklogItem();
-        backlogItem.setTitle(backlogItemTitle);
-        databaseService.addBacklogItem(backlogItem, project.getProjectId());
+        BacklogItem newBacklogItem = createNewBacklogItem(backlogItemTitle);
+
+        databaseService.addBacklogItem(newBacklogItem, project.getProjectId(), project.getBacklogItems());
+        listener.onAddBacklogItemComplete(newBacklogItem);
     }
 
     private void setOnAddBacklogItemCompleteListener(OnAddBacklogItemCompleteListener listener) {
         this.listener = listener;
     }
 
-
+    private BacklogItem createNewBacklogItem(String title) {
+        BacklogItem backlogItem = new BacklogItem();
+        backlogItem.setTitle(title);
+        return backlogItem;
+    }
 }
