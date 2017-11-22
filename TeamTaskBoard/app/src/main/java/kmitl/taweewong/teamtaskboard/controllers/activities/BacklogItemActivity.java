@@ -72,7 +72,7 @@ public class BacklogItemActivity extends AppCompatActivity implements
     @Override
     public void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems) {
         this.backlogItems = backlogItems;
-        initializeFragment(backlogItems);
+        initializeFragment();
     }
 
     @Override
@@ -82,7 +82,6 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     @Override
     public void onAddBacklogItemComplete(BacklogItem backlogItem) {
-        this.backlogItems.add(backlogItem);
         getSupportFragmentManager().popBackStack();
     }
 
@@ -98,17 +97,15 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     @Override
     public void onEditBacklogItemComplete(int position, BacklogItem editedBacklogItem) {
-        this.backlogItems.set(position, editedBacklogItem);
         getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public void onDeleteBacklogItemComplete(int position) {
-        this.backlogItems.remove(position);
         getSupportFragmentManager().popBackStack();
     }
 
-    private void initializeFragment(ArrayList<BacklogItem> backlogItems) {
+    private void initializeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
@@ -123,7 +120,8 @@ public class BacklogItemActivity extends AppCompatActivity implements
                         R.anim.slide_out_to_left,
                         R.anim.slide_in_from_left,
                         R.anim.slide_out_to_right)
-                .replace(R.id.backlogItemFragmentContainer, AddBacklogItemFragment.newInstance(project))
+                .replace(R.id.backlogItemFragmentContainer,
+                        AddBacklogItemFragment.newInstance(projectId, backlogItems))
                 .addToBackStack(null)
                 .commit();
     }
@@ -135,7 +133,8 @@ public class BacklogItemActivity extends AppCompatActivity implements
                         R.anim.slide_out_to_left,
                         R.anim.slide_in_from_left,
                         R.anim.slide_out_to_right)
-                .replace(R.id.backlogItemFragmentContainer, EditBacklogItemFragment.newInstance(project, position))
+                .replace(R.id.backlogItemFragmentContainer,
+                        EditBacklogItemFragment.newInstance(projectId, backlogItems, position))
                 .addToBackStack(null)
                 .commit();
     }

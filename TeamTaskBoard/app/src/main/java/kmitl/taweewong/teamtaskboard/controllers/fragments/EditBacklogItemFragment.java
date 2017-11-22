@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,19 +33,24 @@ public class EditBacklogItemFragment extends Fragment {
 
     @BindView(R.id.editBacklogItemNameEditText) EditText editItemNameEditText;
 
-    private Project project;
+    private String projectId;
+    private ArrayList<BacklogItem> backlogItems;
     private int position;
     private OnEditBacklogItemCompleteListener listener;
 
     private static String POSITION_KEY = "position";
+    private static String BACKLOG_ITEMS_KEY = "backlogItems";
 
     public EditBacklogItemFragment() {
         // Required empty public constructor
     }
 
-    public static EditBacklogItemFragment newInstance(Project project, int position) {
+    public static EditBacklogItemFragment newInstance(String projectId,
+                                                      ArrayList<BacklogItem> backlogItems,
+                                                      int position) {
         Bundle args = new Bundle();
-        args.putParcelable(PROJECT_CLASS_KEY, project);
+        args.putString(PROJECT_CLASS_KEY, projectId);
+        args.putParcelableArrayList(BACKLOG_ITEMS_KEY, backlogItems);
         args.putInt(POSITION_KEY, position);
         
         EditBacklogItemFragment fragment = new EditBacklogItemFragment();
@@ -55,7 +62,8 @@ public class EditBacklogItemFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        project = getArguments().getParcelable(PROJECT_CLASS_KEY);
+        projectId = getArguments().getString(PROJECT_CLASS_KEY);
+        backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEMS_KEY);
         position = getArguments().getInt(POSITION_KEY);
         setOnEditBacklogItemCompleteListener((OnEditBacklogItemCompleteListener) getActivity());
     }
@@ -81,7 +89,7 @@ public class EditBacklogItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_edit_backlog_item, container, false);
         ButterKnife.bind(this, rootView);
-        editItemNameEditText.setText(project.getBacklogItems().get(position).getTitle());
+        editItemNameEditText.setText(backlogItems.get(position).getTitle());
 
         return rootView;
     }
@@ -91,16 +99,16 @@ public class EditBacklogItemFragment extends Fragment {
         String editedTitle = editItemNameEditText.getText().toString();
         DatabaseService databaseService = new DatabaseService();
 
-        BacklogItem editedItem = project.getBacklogItems().get(position);
+        BacklogItem editedItem = backlogItems.get(position);
         editedItem.setTitle(editedTitle);
 
-        databaseService.editBacklogItem(editedItem, project.getProjectId(), position, project.getBacklogItems());
+        databaseService.editBacklogItem(editedItem, projectId, position, backlogItems);
         listener.onEditBacklogItemComplete(position, editedItem);
     }
 
     private void deleteBacklogItem() {
         DatabaseService databaseService = new DatabaseService();
-        databaseService.deleteBacklogItem(project.getProjectId(), position, project.getBacklogItems());
+        databaseService.deleteBacklogItem(projectId, position, backlogItems);
         listener.onDeleteBacklogItemComplete(position);
     }
 
