@@ -10,4 +10,7 @@
     <string name="add_project_button">Add Project</string>
     <string name="add_project_menu">Add Project</string>
     <string name="log_out_menu">Log out</string>
+    <string name="add_backlog_item_label">Add new Backlog item</string>
+    <string name="backlog_item_title_hint">Backlog item title</string>
+    <string name="add_backlog_item_button">Add Backlog item</string>
 </resources>
