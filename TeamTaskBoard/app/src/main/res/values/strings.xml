@@ -15,4 +15,6 @@
     <string name="add_backlog_item_button">Add Backlog item</string>
     <string name="edit_backlog_item_label">Edit Backlog item</string>
     <string name="edit_backlog_item_button">Edit Backlog item</string>
+    <string name="add_backlog_item_menu">Add Backlog item</string>
+    <string name="delete_backlog_item_menu">Delete Backlog item</string>
 </resources>
