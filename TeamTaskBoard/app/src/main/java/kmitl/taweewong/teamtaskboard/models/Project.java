@@ -17,10 +17,11 @@ public class Project implements Parcelable {
 
     }
 
-    private Project(Parcel in) {
+    protected Project(Parcel in) {
         projectId = in.readString();
         name = in.readString();
         members = in.createStringArrayList();
+        backlogItems = in.createTypedArrayList(BacklogItem.CREATOR);
     }
 
     @Override
@@ -28,6 +29,7 @@ public class Project implements Parcelable {
         dest.writeString(projectId);
         dest.writeString(name);
         dest.writeStringList(members);
+        dest.writeTypedList(backlogItems);
     }
 
     @Override

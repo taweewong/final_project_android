@@ -43,7 +43,6 @@ public class DatabaseService {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (String id : projectIds) {
-                            //TODO: fix database error!
                             projects.add(dataSnapshot.child(id).getValue(Project.class));
                         }
                         listener.onQueryProjectsSuccess(projects);
@@ -58,7 +57,7 @@ public class DatabaseService {
 
     public void queryBacklogItems(final String projectId, final OnQueryBacklogItemsCompleteListener listener) {
         databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ArrayList<BacklogItem> backlogItems = new ArrayList<>();
@@ -66,7 +65,6 @@ public class DatabaseService {
                         for (DataSnapshot backlogItemsSnapshot: dataSnapshot.getChildren()) {
                             backlogItems.add(backlogItemsSnapshot.getValue(BacklogItem.class));
                         }
-
                         listener.onQueryBacklogItemsSuccess(backlogItems);
                     }
 
@@ -103,8 +101,12 @@ public class DatabaseService {
         databaseReference.child(CHILD_USERS).child(userId).child(CHILD_PROJECTS).setValue(projects);
     }
 
-    public void addBacklogItem(BacklogItem backlogItem, String projectId) {
-        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
-                .push().setValue(backlogItem);
+    public void addBacklogItem(BacklogItem backlogItem, String projectId, List<BacklogItem> backlogItems) {
+        if (backlogItems == null) {
+            backlogItems = new ArrayList<>();
+        }
+
+        backlogItems.add(backlogItem);
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
     }
 }
