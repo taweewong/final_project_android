@@ -51,7 +51,7 @@ public class ShowProjectsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectItemAdapter = new ProjectItemAdapter(projects);
+        projectItemAdapter = new ProjectItemAdapter(projects, getContext());
         recyclerView = view.findViewById(R.id.showProjectsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
