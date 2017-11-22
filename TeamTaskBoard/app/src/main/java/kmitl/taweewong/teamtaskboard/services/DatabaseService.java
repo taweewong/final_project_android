@@ -43,7 +43,6 @@ public class DatabaseService {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (String id : projectIds) {
-                            //TODO: fix database error!
                             projects.add(dataSnapshot.child(id).getValue(Project.class));
                         }
                         listener.onQueryProjectsSuccess(projects);
@@ -66,7 +65,6 @@ public class DatabaseService {
                         for (DataSnapshot backlogItemsSnapshot: dataSnapshot.getChildren()) {
                             backlogItems.add(backlogItemsSnapshot.getValue(BacklogItem.class));
                         }
-
                         listener.onQueryBacklogItemsSuccess(backlogItems);
                     }
 
