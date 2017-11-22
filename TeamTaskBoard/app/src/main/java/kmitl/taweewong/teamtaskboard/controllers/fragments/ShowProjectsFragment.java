@@ -19,9 +19,7 @@ import kmitl.taweewong.teamtaskboard.models.Project;
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
 
 public class ShowProjectsFragment extends Fragment {
-    List<Project> projects;
-    RecyclerView recyclerView;
-    ProjectItemAdapter projectItemAdapter;
+    private List<Project> projects;
 
     public ShowProjectsFragment() {
         // Required empty public constructor
@@ -51,8 +49,8 @@ public class ShowProjectsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        projectItemAdapter = new ProjectItemAdapter(projects, getContext());
-        recyclerView = view.findViewById(R.id.showProjectsRecyclerView);
+        ProjectItemAdapter projectItemAdapter = new ProjectItemAdapter(projects, getContext());
+        RecyclerView recyclerView = view.findViewById(R.id.showProjectsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(projectItemAdapter);
