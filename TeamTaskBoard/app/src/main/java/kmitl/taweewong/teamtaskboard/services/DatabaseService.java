@@ -141,4 +141,11 @@ public class DatabaseService {
                 .child(CHILD_PROJECT_NAME).
                 setValue(projectName);
     }
+
+    public void updateBacklogItems(List<BacklogItem> backlogItems, String projectId) {
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS)
+                .setValue(backlogItems);
+    }
 }
