@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
+import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.AddProjectFragment;
+import kmitl.taweewong.teamtaskboard.controllers.fragments.EditProjectFragment;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowProjectsFragment;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.models.User;
@@ -24,7 +26,10 @@ import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
 public class ProjectActivity extends AppCompatActivity implements
-        DatabaseService.OnQueryProjectsCompleteListener, AddProjectFragment.OnAddProjectCompleteListener {
+        DatabaseService.OnQueryProjectsCompleteListener,
+        AddProjectFragment.OnAddProjectCompleteListener,
+        EditProjectFragment.OnEditProjectCompleteListener,
+        ProjectItemAdapter.OnClickProjectListener {
     private ArrayList<Project> projects;
     private User user;
 
@@ -83,6 +88,22 @@ public class ProjectActivity extends AppCompatActivity implements
         getSupportFragmentManager().popBackStack();
     }
 
+    @Override
+    public void onEditProjectComplete(int position, String editedProject) {
+        this.projects.get(position).setName(editedProject);
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onClickProject(int position) {
+        startBacklogItemActivity(projects.get(position));
+    }
+
+    @Override
+    public void onLongClickProject(int position) {
+        replaceEditProjectFragment(position, projects.get(position));
+    }
+
     private void initializeFragment(ArrayList<Project> projects) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -98,7 +119,21 @@ public class ProjectActivity extends AppCompatActivity implements
                         R.anim.slide_out_to_left,
                         R.anim.slide_in_from_left,
                         R.anim.slide_out_to_right)
-                .replace(R.id.projectFragmentContainer, AddProjectFragment.newInstance(user))
+                .replace(R.id.projectFragmentContainer,
+                        AddProjectFragment.newInstance(user))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void replaceEditProjectFragment(int position, Project project) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right)
+                .replace(R.id.projectFragmentContainer,
+                        EditProjectFragment.newInstance(project.getProjectId(), project.getName(), position))
                 .addToBackStack(null)
                 .commit();
     }
@@ -110,5 +145,11 @@ public class ProjectActivity extends AppCompatActivity implements
 
     private void startLoginActivity() {
         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    private void startBacklogItemActivity(Project project) {
+        Intent intent = new Intent(this, BacklogItemActivity.class);
+        intent.putExtra("project", project);
+        startActivity(intent);
     }
 }

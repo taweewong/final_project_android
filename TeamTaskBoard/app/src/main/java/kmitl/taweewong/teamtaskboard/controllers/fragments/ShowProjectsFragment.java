@@ -15,6 +15,7 @@ import java.util.List;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter;
 import kmitl.taweewong.teamtaskboard.models.Project;
+import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter.OnClickProjectListener;
 
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
 
@@ -49,7 +50,7 @@ public class ShowProjectsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ProjectItemAdapter projectItemAdapter = new ProjectItemAdapter(projects, getContext());
+        ProjectItemAdapter projectItemAdapter = new ProjectItemAdapter(projects, (OnClickProjectListener) getContext());
         RecyclerView recyclerView = view.findViewById(R.id.showProjectsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

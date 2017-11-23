@@ -18,13 +18,19 @@ import kmitl.taweewong.teamtaskboard.viewholders.ProjectItemViewHolder;
 
 public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemViewHolder> implements
         View.OnClickListener, View.OnLongClickListener {
+
+    public interface OnClickProjectListener {
+        void onClickProject(int position);
+        void onLongClickProject(int position);
+    }
+
     private List<Project> projects;
     private RecyclerView parentRecyclerView;
-    private Context context;
+    private OnClickProjectListener listener;
 
-    public ProjectItemAdapter(List<Project> projects, Context context) {
+    public ProjectItemAdapter(List<Project> projects, OnClickProjectListener listener) {
         this.projects = projects;
-        this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -58,20 +64,13 @@ public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemViewHold
     @Override
     public void onClick(View view) {
         int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
-        Toast.makeText(context, "click " + projects.get(itemPosition).getName(), Toast.LENGTH_SHORT).show();
-        startBacklogItemActivity(projects.get(itemPosition));
+        listener.onClickProject(itemPosition);
     }
 
     @Override
     public boolean onLongClick(View view) {
         int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
-        Toast.makeText(context, "long click " +projects.get(itemPosition).getName(), Toast.LENGTH_SHORT).show();
+        listener.onLongClickProject(itemPosition);
         return true;
-    }
-
-    private void startBacklogItemActivity(Project project) {
-        Intent intent = new Intent(context, BacklogItemActivity.class);
-        intent.putExtra("project", project);
-        context.startActivity(intent);
     }
 }

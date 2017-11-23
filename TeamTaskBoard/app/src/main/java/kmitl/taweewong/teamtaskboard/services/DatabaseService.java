@@ -29,6 +29,7 @@ public class DatabaseService {
 
     private static final String CHILD_USERS = "users";
     private static final String CHILD_PROJECTS = "projects";
+    private static final String CHILD_PROJECT_NAME = "name";
     private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
 
     public DatabaseService() {
@@ -89,7 +90,9 @@ public class DatabaseService {
     }
 
     private void insertProject(Project project, String projectId) {
-        databaseReference.child(CHILD_PROJECTS).child(projectId).setValue(project);
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .setValue(project);
     }
 
     private void updateUserProject(List<String> projects, String userId, String projectId) {
@@ -98,7 +101,10 @@ public class DatabaseService {
         }
 
         projects.add(projectId);
-        databaseReference.child(CHILD_USERS).child(userId).child(CHILD_PROJECTS).setValue(projects);
+        databaseReference.child(CHILD_USERS)
+                .child(userId)
+                .child(CHILD_PROJECTS)
+                .setValue(projects);
     }
 
     public void addBacklogItem(BacklogItem backlogItem, String projectId, List<BacklogItem> backlogItems) {
@@ -107,16 +113,32 @@ public class DatabaseService {
         }
 
         backlogItems.add(backlogItem);
-        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS)
+                .setValue(backlogItems);
     }
 
     public void editBacklogItem(BacklogItem editedItem, String projectId, int position, List<BacklogItem> backlogItems) {
         backlogItems.set(position, editedItem);
-        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS)
+                .setValue(backlogItems);
     }
 
     public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
         backlogItems.remove(position);
-        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS)
+                .setValue(backlogItems);
+    }
+
+    public void editProject(String projectId, String projectName) {
+        databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_PROJECT_NAME).
+                setValue(projectName);
     }
 }
