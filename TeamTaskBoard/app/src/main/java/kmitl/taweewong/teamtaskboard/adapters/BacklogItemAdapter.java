@@ -38,7 +38,7 @@ public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHold
     @Override
     public BacklogItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.backlog_item_view, null, false);
+        View itemView = inflater.inflate(R.layout.backlog_item_view, parent, false);
         itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(this);
 
