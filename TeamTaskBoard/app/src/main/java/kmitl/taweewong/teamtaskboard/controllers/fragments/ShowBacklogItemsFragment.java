@@ -54,35 +54,40 @@ public class ShowBacklogItemsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems, (OnClickBacklogItemListener) getContext());
+        ItemTouchHelper.Callback callback = createItemTouchHelperCallback(backlogItems);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+
+        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems,
+                (OnClickBacklogItemListener) getContext(),
+                itemTouchHelper);
+
         RecyclerView recyclerView = view.findViewById(R.id.showBacklogItemsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(backlogItemAdapter);
 
-        ItemTouchHelper.Callback callback = createItemTouchHelperCallback(backlogItems);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     private ItemTouchHelper.Callback createItemTouchHelperCallback(final List<BacklogItem> backlogItems) {
        return new ItemTouchHelper.Callback() {
 
-           @Override
-           public boolean isLongPressDragEnabled() {
-               return true;
-           }
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return false;
+            }
 
-           @Override
-           public boolean isItemViewSwipeEnabled() {
-               return true;
-           }
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                return true;
+            }
 
-           @Override
+            @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-               int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-               int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-               return makeMovementFlags(dragFlags, swipeFlags);
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
             }
 
             @Override
