@@ -18,21 +18,26 @@ import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter;
-import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.adapters.BacklogItemAdapter.OnClickBacklogItemListener;
+import kmitl.taweewong.teamtaskboard.models.BacklogItem;
+import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.BacklogItem.BACKLOG_ITEM_CLASS_KEY;
 
 public class ShowBacklogItemsFragment extends Fragment {
-    List<BacklogItem> backlogItems;
+    private List<BacklogItem> backlogItems;
+    private String projectId;
+
+    private static String PROJECT_ID_KEY = "projectId";
 
     public ShowBacklogItemsFragment() {
         // Required empty public constructor
     }
 
-    public static ShowBacklogItemsFragment newInstance(ArrayList<BacklogItem> backlogItems) {
+    public static ShowBacklogItemsFragment newInstance(ArrayList<BacklogItem> backlogItems, String projectId) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(BACKLOG_ITEM_CLASS_KEY, backlogItems);
+        args.putString(PROJECT_ID_KEY, projectId);
 
         ShowBacklogItemsFragment fragment = new ShowBacklogItemsFragment();
         fragment.setArguments(args);
@@ -43,6 +48,7 @@ public class ShowBacklogItemsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEM_CLASS_KEY);
+        projectId = getArguments().getString(PROJECT_ID_KEY);
     }
 
     @Override
@@ -72,36 +78,54 @@ public class ShowBacklogItemsFragment extends Fragment {
 
     private ItemTouchHelper.Callback createItemTouchHelperCallback(final List<BacklogItem> backlogItems) {
        return new ItemTouchHelper.Callback() {
+           int sourcePosition;
+           int targetPosition;
+           DatabaseService databaseService = new DatabaseService();
 
-            @Override
-            public boolean isLongPressDragEnabled() {
-                return false;
-            }
+           @Override
+           public boolean isLongPressDragEnabled() {
+               return false;
+           }
 
-            @Override
-            public boolean isItemViewSwipeEnabled() {
+           @Override
+           public boolean isItemViewSwipeEnabled() {
                 return true;
             }
 
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
+           @Override
+           public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+               int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+               int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+               return makeMovementFlags(dragFlags, swipeFlags);
+           }
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                Toast.makeText(getContext(), "on move", Toast.LENGTH_SHORT).show();
-                Collections.swap(backlogItems, viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                return true;
-            }
+           @Override
+           public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+               sourcePosition = viewHolder.getAdapterPosition();
+               targetPosition = target.getAdapterPosition();
+               Collections.swap(backlogItems, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+               recyclerView.getAdapter().notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+               return true;
+           }
 
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Toast.makeText(getContext(), "on swipe", Toast.LENGTH_SHORT).show();
-            }
+           @Override
+           public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+               super.clearView(recyclerView, viewHolder);
+
+               if (isDropItem()) {
+                   databaseService.updateBacklogItems(backlogItems, projectId);
+                   Toast.makeText(getContext(), "moved", Toast.LENGTH_SHORT).show();
+               }
+           }
+
+           @Override
+           public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+               Toast.makeText(getContext(), "on swipe", Toast.LENGTH_SHORT).show();
+           }
+
+           private boolean isDropItem() {
+               return sourcePosition != targetPosition;
+           }
         };
     }
 }
