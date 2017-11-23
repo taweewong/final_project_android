@@ -28,7 +28,6 @@ public class BacklogItemActivity extends AppCompatActivity implements
         BacklogItemAdapter.OnClickBacklogItemListener,
         EditBacklogItemFragment.OnEditBacklogItemCompleteListener {
     private ArrayList<BacklogItem> backlogItems;
-    private Project project;
     private String projectId;
 
     @Override
@@ -36,12 +35,10 @@ public class BacklogItemActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backlog_item);
 
-        project = getIntent().getParcelableExtra("project");
+        Project project = getIntent().getParcelableExtra("project");
         setTitle(String.format("%s's backlog items", project.getName()));
 
-        if (project != null) {
-            projectId = project.getProjectId();
-        }
+        projectId = project.getProjectId();
 
         DatabaseService databaseService = new DatabaseService();
         databaseService.queryBacklogItems(projectId, this);
@@ -109,7 +106,7 @@ public class BacklogItemActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
-                .add(R.id.backlogItemFragmentContainer, ShowBacklogItemsFragment.newInstance(backlogItems))
+                .add(R.id.backlogItemFragmentContainer, ShowBacklogItemsFragment.newInstance(backlogItems, projectId))
                 .commit();
     }
 
