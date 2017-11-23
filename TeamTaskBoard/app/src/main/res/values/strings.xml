@@ -5,4 +5,18 @@
 
     <string name="facebook_app_id">500545806995257</string>
     <string name="fb_login_protocol_scheme">fb500545806995257</string>
+    <string name="project_name_hint">Project name</string>
+    <string name="add_project_label">Add new project</string>
+    <string name="add_project_button">Add Project</string>
+    <string name="add_project_menu">Add Project</string>
+    <string name="log_out_menu">Log out</string>
+    <string name="add_backlog_item_label">Add new Backlog item</string>
+    <string name="backlog_item_title_hint">Backlog item title</string>
+    <string name="add_backlog_item_button">Add Backlog item</string>
+    <string name="edit_backlog_item_label">Edit Backlog item</string>
+    <string name="edit_backlog_item_button">Edit Backlog item</string>
+    <string name="add_backlog_item_menu">Add Backlog item</string>
+    <string name="delete_backlog_item_menu">Delete Backlog item</string>
+    <string name="edit_project_label">Edit Project</string>
+    <string name="edit_project_button">Edit Project</string>
 </resources>

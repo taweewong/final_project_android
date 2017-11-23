@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class User implements Parcelable {
+    private String userId;
     private String firstName;
     private String lastName;
+    private String email;
     private List<String> projects;
 
     public static final String USER_CLASS_KEY = "user";
@@ -17,15 +19,19 @@ public class User implements Parcelable {
     }
 
     private User(Parcel in) {
+        userId = in.readString();
         firstName = in.readString();
         lastName = in.readString();
+        email = in.readString();
         projects = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userId);
         dest.writeString(firstName);
         dest.writeString(lastName);
+        dest.writeString(email);
         dest.writeStringList(projects);
     }
 
@@ -46,6 +52,14 @@ public class User implements Parcelable {
         }
     };
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -60,6 +74,14 @@ public class User implements Parcelable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<String> getProjects() {
