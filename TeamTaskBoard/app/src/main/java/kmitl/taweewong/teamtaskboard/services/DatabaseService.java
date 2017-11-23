@@ -29,7 +29,9 @@ public class DatabaseService {
 
     private static final String CHILD_USERS = "users";
     private static final String CHILD_PROJECTS = "projects";
+    private static final String CHILD_PROJECT_NAME = "name";
     private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
+
 
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -118,5 +120,9 @@ public class DatabaseService {
     public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
         backlogItems.remove(position);
         databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS).setValue(backlogItems);
+    }
+
+    public void editProject(String projectId, String projectName) {
+        databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_PROJECT_NAME).setValue(projectName);
     }
 }
