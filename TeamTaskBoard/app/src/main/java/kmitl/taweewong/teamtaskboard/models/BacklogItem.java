@@ -27,7 +27,7 @@ public class BacklogItem implements Parcelable {
         return 0;
     }
 
-    public static final Creator<BacklogItem> CREATOR = new Creator<BacklogItem>() {
+    static final Creator<BacklogItem> CREATOR = new Creator<BacklogItem>() {
         @Override
         public BacklogItem createFromParcel(Parcel in) {
             return new BacklogItem(in);
@@ -48,6 +48,10 @@ public class BacklogItem implements Parcelable {
     }
 
     public Tasks getTasks() {
+        if (tasks == null) {
+            return new Tasks();
+        }
+
         return tasks;
     }
 
