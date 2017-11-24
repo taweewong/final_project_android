@@ -53,7 +53,6 @@ public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHold
         return new BacklogItemViewHolder(itemView);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(final BacklogItemViewHolder holder, int position) {
         TextView backlogItemNameText = holder.getBacklogItemNameText();
@@ -65,6 +64,7 @@ public class BacklogItemAdapter extends RecyclerView.Adapter<BacklogItemViewHold
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    view.performClick();
                     itemTouchHelper.startDrag(holder);
                 }
                 return false;
