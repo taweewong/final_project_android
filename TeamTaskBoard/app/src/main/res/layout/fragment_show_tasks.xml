@@ -4,4 +4,9 @@
     android:layout_height="match_parent"
     tools:context="kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/showTasksRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>
