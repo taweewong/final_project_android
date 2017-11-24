@@ -20,7 +20,10 @@ import kmitl.taweewong.teamtaskboard.controllers.fragments.EditBacklogItemFragme
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowBacklogItemsFragment;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
+import kmitl.taweewong.teamtaskboard.models.Tasks;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
+
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TASKS_CLASS_KEY;
 
 public class BacklogItemActivity extends AppCompatActivity implements
         DatabaseService.OnQueryBacklogItemsCompleteListener,
@@ -84,6 +87,8 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     @Override
     public void onClickBacklogItem(int position) {
+        BacklogItem selectedItem = backlogItems.get(position);
+        startTaskActivity(selectedItem.getTasks(), selectedItem.getId());
         Toast.makeText(this, "click " + backlogItems.get(position).getTitle(), Toast.LENGTH_SHORT).show();
     }
 
@@ -143,5 +148,14 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     private void startLoginActivity() {
         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    private void startTaskActivity(Tasks tasks, String itemId) {
+        Intent intent = new Intent(this, TaskActivity.class);
+        intent.putExtra(TASKS_CLASS_KEY, tasks);
+        intent.putExtra("projectId", projectId);
+        intent.putExtra("itemId", itemId);
+
+        startActivity(intent);
     }
 }

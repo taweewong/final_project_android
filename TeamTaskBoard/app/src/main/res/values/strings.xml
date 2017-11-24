@@ -19,4 +19,6 @@
     <string name="delete_backlog_item_menu">Delete Backlog item</string>
     <string name="edit_project_label">Edit Project</string>
     <string name="edit_project_button">Edit Project</string>
+    <string name="title_activity_task">TaskActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
