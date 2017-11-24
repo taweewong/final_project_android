@@ -87,7 +87,8 @@ public class BacklogItemActivity extends AppCompatActivity implements
 
     @Override
     public void onClickBacklogItem(int position) {
-        startTaskActivity(backlogItems.get(position).getTasks());
+        BacklogItem selectedItem = backlogItems.get(position);
+        startTaskActivity(selectedItem.getTasks(), selectedItem.getId());
         Toast.makeText(this, "click " + backlogItems.get(position).getTitle(), Toast.LENGTH_SHORT).show();
     }
 
@@ -149,9 +150,11 @@ public class BacklogItemActivity extends AppCompatActivity implements
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    private void startTaskActivity(Tasks tasks) {
+    private void startTaskActivity(Tasks tasks, String itemId) {
         Intent intent = new Intent(this, TaskActivity.class);
         intent.putExtra(TASKS_CLASS_KEY, tasks);
+        intent.putExtra("projectId", projectId);
+        intent.putExtra("itemId", itemId);
 
         startActivity(intent);
     }
