@@ -102,7 +102,8 @@ public class EditBacklogItemFragment extends Fragment {
         BacklogItem editedItem = backlogItems.get(position);
         editedItem.setTitle(editedTitle);
 
-        databaseService.editBacklogItem(editedItem, projectId, position, backlogItems);
+        databaseService.editBacklogItem(editedItem, projectId);
+        backlogItems.set(position, editedItem);
         listener.onEditBacklogItemComplete(position, editedItem);
     }
 
