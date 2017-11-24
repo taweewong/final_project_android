@@ -112,6 +112,9 @@ public class DatabaseService {
             backlogItems = new ArrayList<>();
         }
 
+        String id = databaseReference.push().getKey();
+        backlogItem.setId(id);
+
         backlogItems.add(backlogItem);
         databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
@@ -119,12 +122,26 @@ public class DatabaseService {
                 .setValue(backlogItems);
     }
 
-    public void editBacklogItem(BacklogItem editedItem, String projectId, int position, List<BacklogItem> backlogItems) {
-        backlogItems.set(position, editedItem);
-        databaseReference.child(CHILD_PROJECTS)
+    public void editBacklogItem(final BacklogItem editedItem, String projectId, int position, List<BacklogItem> backlogItems) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
-                .child(CHILD_BACKLOG_ITEMS)
-                .setValue(backlogItems);
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild("id").equalTo(editedItem.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    itemRef.child(snapshot.getKey()).setValue(editedItem);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
