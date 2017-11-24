@@ -5,16 +5,31 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment;
+import kmitl.taweewong.teamtaskboard.models.Tasks;
 
 public class TaskPagerAdapter extends FragmentPagerAdapter{
 
-    public TaskPagerAdapter(FragmentManager fm) {
+    private Tasks tasks;
+    private String projectId;
+    private String itemId;
+
+    public TaskPagerAdapter(FragmentManager fm, Tasks tasks, String projectId, String itemId) {
         super(fm);
+        this.tasks = tasks;
+        this.projectId = projectId;
+        this.itemId = itemId;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return ShowTasksFragment.newInstance(position + 1);
+        switch (position) {
+            case 0:
+                return ShowTasksFragment.newInstance(tasks.getTodoTasks(), projectId, itemId);
+            case 1:
+                return ShowTasksFragment.newInstance(tasks.getDoingTasks(), projectId, itemId);
+            default:
+                return ShowTasksFragment.newInstance(tasks.getDoneTasks(), projectId, itemId);
+        }
     }
 
     @Override
@@ -24,6 +39,13 @@ public class TaskPagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Page " + position;
+        switch (position) {
+            case 0:
+                return "TODO";
+            case 1:
+                return "DOING";
+            default:
+                return "DONE";
+        }
     }
 }
