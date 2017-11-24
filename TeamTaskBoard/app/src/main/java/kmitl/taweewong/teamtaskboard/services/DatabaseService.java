@@ -38,6 +38,7 @@ public class DatabaseService {
     private static final String CHILD_PROJECT_NAME = "name";
     private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
     private static final String CHILD_ID_KEY = "id";
+    private static final String CHILD_TASKS = "tasks";
 
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -94,8 +95,13 @@ public class DatabaseService {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Tasks tasks = new Tasks();
                         for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                            tasks = snapshot.child("tasks").getValue(Tasks.class);
+                            tasks = snapshot.child(CHILD_TASKS).getValue(Tasks.class);
                         }
+
+                        if (tasks == null) {
+                            tasks = new Tasks();
+                        }
+
                         listener.onQueryTasksItemsSuccess(tasks);
                     }
 
