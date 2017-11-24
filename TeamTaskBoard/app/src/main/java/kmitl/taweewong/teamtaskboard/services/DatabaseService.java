@@ -12,6 +12,7 @@ import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
+import kmitl.taweewong.teamtaskboard.models.Tasks;
 
 public class DatabaseService {
 
@@ -25,12 +26,18 @@ public class DatabaseService {
         void onQueryBacklogItemsFailed();
     }
 
+    public interface OnQueryTasksCompleteListener {
+        void onQueryTasksItemsSuccess(Tasks tasks);
+        void onQueryTasksItemsFailed();
+    }
+
     private DatabaseReference databaseReference;
 
     private static final String CHILD_USERS = "users";
     private static final String CHILD_PROJECTS = "projects";
     private static final String CHILD_PROJECT_NAME = "name";
     private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
+    private static final String CHILD_ID_KEY = "id";
 
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -72,6 +79,29 @@ public class DatabaseService {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         listener.onQueryBacklogItemsFailed();
+                    }
+                });
+    }
+
+    public void queryTasks(String projectId, String itemId, final OnQueryTasksCompleteListener listener) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Tasks tasks = new Tasks();
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                            tasks = snapshot.child("tasks").getValue(Tasks.class);
+                        }
+                        listener.onQueryTasksItemsSuccess(tasks);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onQueryTasksItemsFailed();
                     }
                 });
     }
@@ -122,12 +152,12 @@ public class DatabaseService {
                 .setValue(backlogItems);
     }
 
-    public void editBacklogItem(final BacklogItem editedItem, String projectId, int position, List<BacklogItem> backlogItems) {
+    public void editBacklogItem(final BacklogItem editedItem, String projectId) {
         final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
                 .child(CHILD_BACKLOG_ITEMS);
 
-        itemRef.orderByChild("id").equalTo(editedItem.getId())
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(editedItem.getId())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -141,7 +171,6 @@ public class DatabaseService {
 
             }
         });
-
     }
 
     public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
