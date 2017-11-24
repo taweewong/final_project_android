@@ -12,6 +12,10 @@ public class Tasks implements Parcelable {
 
     public static String TASKS_CLASS_KEY = "tasks";
 
+    public enum TaskType {
+        todoTasks, doingTasks, doneTasks
+    }
+
     public Tasks() {
     }
 
