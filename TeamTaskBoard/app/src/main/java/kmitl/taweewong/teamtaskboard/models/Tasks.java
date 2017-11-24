@@ -4,16 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tasks implements Parcelable {
-    private List<Task> todoTasks;
-    private List<Task> doingTasks;
-    private List<Task> doneTasks;
+    private ArrayList<Task> todoTasks;
+    private ArrayList<Task> doingTasks;
+    private ArrayList<Task> doneTasks;
 
     public static String TASKS_CLASS_KEY = "tasks";
 
-    Tasks() {
+    public Tasks() {
     }
 
     private Tasks(Parcel in) {
@@ -40,19 +39,19 @@ public class Tasks implements Parcelable {
         }
     };
 
-    public void setTodoTasks(List<Task> todoTasks) {
+    public void setTodoTasks(ArrayList<Task> todoTasks) {
         this.todoTasks = todoTasks;
     }
 
-    public void setDoingTasks(List<Task> doingTasks) {
+    public void setDoingTasks(ArrayList<Task> doingTasks) {
         this.doingTasks = doingTasks;
     }
 
-    public void setDoneTasks(List<Task> doneTasks) {
+    public void setDoneTasks(ArrayList<Task> doneTasks) {
         this.doneTasks = doneTasks;
     }
 
-    public List<Task> getTodoTasks() {
+    public ArrayList<Task> getTodoTasks() {
         if (todoTasks == null) {
             return new ArrayList<>();
         }
@@ -60,7 +59,7 @@ public class Tasks implements Parcelable {
         return todoTasks;
     }
 
-    public List<Task> getDoingTasks() {
+    public ArrayList<Task> getDoingTasks() {
         if (doingTasks == null) {
             return new ArrayList<>();
         }
@@ -68,7 +67,7 @@ public class Tasks implements Parcelable {
         return doingTasks;
     }
 
-    public List<Task> getDoneTasks() {
+    public ArrayList<Task> getDoneTasks() {
         if (doneTasks == null) {
             return new ArrayList<>();
         }
