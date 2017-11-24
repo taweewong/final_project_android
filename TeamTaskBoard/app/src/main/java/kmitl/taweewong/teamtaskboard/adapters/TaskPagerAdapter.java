@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment;
 import kmitl.taweewong.teamtaskboard.models.Tasks;
 
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType.*;
+
 public class TaskPagerAdapter extends FragmentPagerAdapter{
 
     private Tasks tasks;
@@ -24,11 +26,11 @@ public class TaskPagerAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return ShowTasksFragment.newInstance(tasks.getTodoTasks(), projectId, itemId);
+                return ShowTasksFragment.newInstance(tasks.getTodoTasks(), projectId, itemId, todoTasks);
             case 1:
-                return ShowTasksFragment.newInstance(tasks.getDoingTasks(), projectId, itemId);
+                return ShowTasksFragment.newInstance(tasks.getDoingTasks(), projectId, itemId, doingTasks);
             default:
-                return ShowTasksFragment.newInstance(tasks.getDoneTasks(), projectId, itemId);
+                return ShowTasksFragment.newInstance(tasks.getDoneTasks(), projectId, itemId, doneTasks);
         }
     }
 
