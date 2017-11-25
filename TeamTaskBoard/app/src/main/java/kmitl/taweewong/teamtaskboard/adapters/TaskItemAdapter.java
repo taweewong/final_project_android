@@ -66,7 +66,7 @@ public class TaskItemAdapter extends RecyclerView.Adapter<TaskViewHolder> implem
         taskItemNameText.setText(tasks.get(position).getTitle());
 
         String description = tasks.get(position).getDescription();
-        if (description == null) {
+        if (description == null || description.isEmpty()) {
             taskItemDescriptionText.setVisibility(View.GONE);
         } else {
             taskItemDescriptionText.setVisibility(View.VISIBLE);
