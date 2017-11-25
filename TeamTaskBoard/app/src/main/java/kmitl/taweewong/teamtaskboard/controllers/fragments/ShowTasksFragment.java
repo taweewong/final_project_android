@@ -1,6 +1,7 @@
 package kmitl.taweewong.teamtaskboard.controllers.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -20,25 +24,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.TaskItemAdapter;
-import kmitl.taweewong.teamtaskboard.adapters.TaskItemAdapter.OnClickTaskListener;
+import kmitl.taweewong.teamtaskboard.controllers.activities.AddTaskActivity;
 import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_KEY;
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_LIST_KEY;
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_TYPE_KEY;
 import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType;
 
-public class ShowTasksFragment extends Fragment {
+public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnClickTaskListener {
 
     @BindView(R.id.showTasksRecyclerView) RecyclerView recyclerView;
 
-    private List<Task> tasks;
+    private ArrayList<Task> tasks;
     private String projectId;
     private String itemId;
     private TaskType taskType;
+    TaskItemAdapter taskItemAdapter;
 
-    private static final String TASK_LIST_KEY = "taskList";
-    private static final String PROJECT_ID_KEY = "projectId";
-    private static final String ITEM_ID_KEY = "itemId";
-    private static final String TASK_TYPE_KEY = "taskType";
+    public static final int ADD_TASK_REQUEST_CODE = 255;
 
     public ShowTasksFragment() {
         // Required empty public constructor
@@ -59,10 +66,26 @@ public class ShowTasksFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         tasks = getArguments().getParcelableArrayList(TASK_LIST_KEY);
         projectId = getArguments().getString(PROJECT_ID_KEY);
         itemId = getArguments().getString(ITEM_ID_KEY);
         taskType = TaskType.valueOf(getArguments().getString(TASK_TYPE_KEY));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.addTaskMenu:
+                startAddTaskActivity();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -79,11 +102,10 @@ public class ShowTasksFragment extends Fragment {
         ItemTouchHelper.Callback callback = createItemTouchHelperCallback(tasks);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
 
-        TaskItemAdapter taskItemAdapter = new TaskItemAdapter(tasks,
-                (OnClickTaskListener) getContext(),
-                itemTouchHelper);
-
-        RecyclerView recyclerView = view.findViewById(R.id.showTasksRecyclerView);
+        taskItemAdapter = new TaskItemAdapter(tasks,
+                this,
+                itemTouchHelper,
+                taskType);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(taskItemAdapter);
@@ -142,5 +164,36 @@ public class ShowTasksFragment extends Fragment {
                 return sourcePosition != targetPosition;
             }
         };
+    }
+
+    @Override
+    public void onClickTask(int position, TaskType type) {
+
+    }
+
+    @Override
+    public void onLongClickTask(int position) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == ADD_TASK_REQUEST_CODE) {
+            Task newTask = data.getParcelableExtra(TASK_KEY);
+
+            tasks.add(newTask);
+            taskItemAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void startAddTaskActivity() {
+        Intent intent = new Intent(getContext(), AddTaskActivity.class);
+        intent.putExtra(TASK_TYPE_KEY, taskType.name());
+        intent.putExtra(TASK_LIST_KEY, tasks);
+        intent.putExtra(PROJECT_ID_KEY, projectId);
+        intent.putExtra(ITEM_ID_KEY, itemId);
+
+        startActivityForResult(intent, ADD_TASK_REQUEST_CODE);
     }
 }

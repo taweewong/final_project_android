@@ -15,11 +15,13 @@ import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.viewholders.TaskViewHolder;
 import kmitl.taweewong.teamtaskboard.views.TouchableImageButton;
 
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType;
+
 public class TaskItemAdapter extends RecyclerView.Adapter<TaskViewHolder> implements
         View.OnClickListener, View.OnLongClickListener{
 
     public interface OnClickTaskListener {
-        void onClickTask(int position);
+        void onClickTask(int position, TaskType type);
         void onLongClickTask(int position);
     }
 
@@ -27,11 +29,16 @@ public class TaskItemAdapter extends RecyclerView.Adapter<TaskViewHolder> implem
     private RecyclerView parentRecyclerView;
     private OnClickTaskListener listener;
     private ItemTouchHelper itemTouchHelper;
+    private TaskType taskType;
 
-    public TaskItemAdapter(List<Task> tasks, OnClickTaskListener listener, ItemTouchHelper itemTouchHelper) {
+    public TaskItemAdapter(List<Task> tasks,
+                           OnClickTaskListener listener,
+                           ItemTouchHelper itemTouchHelper,
+                           TaskType taskType) {
         this.tasks = tasks;
         this.listener = listener;
         this.itemTouchHelper = itemTouchHelper;
+        this.taskType = taskType;
     }
 
     @Override
@@ -59,7 +66,7 @@ public class TaskItemAdapter extends RecyclerView.Adapter<TaskViewHolder> implem
         taskItemNameText.setText(tasks.get(position).getTitle());
 
         String description = tasks.get(position).getDescription();
-        if (description == null) {
+        if (description == null || description.isEmpty()) {
             taskItemDescriptionText.setVisibility(View.GONE);
         } else {
             taskItemDescriptionText.setVisibility(View.VISIBLE);
@@ -86,7 +93,7 @@ public class TaskItemAdapter extends RecyclerView.Adapter<TaskViewHolder> implem
     @Override
     public void onClick(View view) {
         int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
-        listener.onClickTask(itemPosition);
+        listener.onClickTask(itemPosition, taskType);
     }
 
     @Override
