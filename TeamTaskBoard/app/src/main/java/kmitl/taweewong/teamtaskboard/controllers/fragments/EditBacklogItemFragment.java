@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
-import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
@@ -27,7 +26,7 @@ import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
 public class EditBacklogItemFragment extends Fragment {
 
     public interface OnEditBacklogItemCompleteListener {
-        void onEditBacklogItemComplete(int position, BacklogItem editedBacklogItem);
+        void onEditBacklogItemComplete(int position);
         void onDeleteBacklogItemComplete(int position);
     }
 
@@ -36,6 +35,7 @@ public class EditBacklogItemFragment extends Fragment {
     private String projectId;
     private ArrayList<BacklogItem> backlogItems;
     private int position;
+    private BacklogItem editedItem;
     private OnEditBacklogItemCompleteListener listener;
 
     private static String POSITION_KEY = "position";
@@ -65,6 +65,7 @@ public class EditBacklogItemFragment extends Fragment {
         projectId = getArguments().getString(PROJECT_CLASS_KEY);
         backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEMS_KEY);
         position = getArguments().getInt(POSITION_KEY);
+        editedItem = backlogItems.get(position);
         setOnEditBacklogItemCompleteListener((OnEditBacklogItemCompleteListener) getActivity());
     }
 
@@ -99,12 +100,16 @@ public class EditBacklogItemFragment extends Fragment {
         String editedTitle = editItemNameEditText.getText().toString();
         DatabaseService databaseService = new DatabaseService();
 
-        BacklogItem editedItem = backlogItems.get(position);
-        editedItem.setTitle(editedTitle);
+        try {
+            editedItem = backlogItems.get(position);
+            editedItem.setTitle(editedTitle);
+            databaseService.editBacklogItem(editedItem, projectId);
+            backlogItems.set(position, editedItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        databaseService.editBacklogItem(editedItem, projectId);
-        backlogItems.set(position, editedItem);
-        listener.onEditBacklogItemComplete(position, editedItem);
+        listener.onEditBacklogItemComplete(position);
     }
 
     private void deleteBacklogItem() {

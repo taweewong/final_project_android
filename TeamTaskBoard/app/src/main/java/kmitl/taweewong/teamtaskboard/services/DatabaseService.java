@@ -69,7 +69,7 @@ public class DatabaseService {
 
     public void queryBacklogItems(final String projectId, final OnQueryBacklogItemsCompleteListener listener) {
         databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ArrayList<BacklogItem> backlogItems = new ArrayList<>();

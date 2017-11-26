@@ -24,9 +24,10 @@ import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.BacklogItem.BACKLOG_ITEM_CLASS_KEY;
 
-public class ShowBacklogItemsFragment extends Fragment {
+public class ShowBacklogItemsFragment extends Fragment implements DatabaseService.OnQueryBacklogItemsCompleteListener {
     private List<BacklogItem> backlogItems;
     private String projectId;
+    private BacklogItemAdapter backlogItemAdapter;
 
     private static String PROJECT_ID_KEY = "projectId";
 
@@ -49,6 +50,9 @@ public class ShowBacklogItemsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         backlogItems = getArguments().getParcelableArrayList(BACKLOG_ITEM_CLASS_KEY);
         projectId = getArguments().getString(PROJECT_ID_KEY);
+
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.queryBacklogItems(projectId, this);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class ShowBacklogItemsFragment extends Fragment {
         ItemTouchHelper.Callback callback = createItemTouchHelperCallback(backlogItems);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
 
-        BacklogItemAdapter backlogItemAdapter = new BacklogItemAdapter(backlogItems,
+        backlogItemAdapter = new BacklogItemAdapter(backlogItems,
                 (OnClickBacklogItemListener) getContext(),
                 itemTouchHelper);
 
@@ -127,5 +131,17 @@ public class ShowBacklogItemsFragment extends Fragment {
                return sourcePosition != targetPosition;
            }
         };
+    }
+
+    @Override
+    public void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems) {
+        this.backlogItems.clear();
+        this.backlogItems.addAll(backlogItems);
+        backlogItemAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onQueryBacklogItemsFailed() {
+
     }
 }
