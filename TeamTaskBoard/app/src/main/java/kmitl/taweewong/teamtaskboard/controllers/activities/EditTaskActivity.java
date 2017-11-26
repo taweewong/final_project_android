@@ -106,7 +106,7 @@ public class EditTaskActivity extends AppCompatActivity {
         DatabaseService databaseService = new DatabaseService();
 
         taskList.remove(position);
-        databaseService.deleteTask(taskList, task.getId(), projectId, itemId, taskType);
+        databaseService.deleteTask(taskList, projectId, itemId, taskType);
         finish();
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }

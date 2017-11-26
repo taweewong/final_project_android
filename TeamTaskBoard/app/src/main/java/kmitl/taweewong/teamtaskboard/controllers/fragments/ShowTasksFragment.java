@@ -30,7 +30,6 @@ import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.models.Tasks;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
-import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.EDITED_TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.POSITION_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;

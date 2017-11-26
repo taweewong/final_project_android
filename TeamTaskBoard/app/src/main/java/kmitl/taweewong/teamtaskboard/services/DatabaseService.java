@@ -327,7 +327,7 @@ public class DatabaseService {
                 });
     }
 
-    public void deleteTask(final List<Task> deletedTasks, final String taskId, String projectId, final String itemId, final TaskType type) {
+    public void deleteTask(final List<Task> deletedTasks, String projectId, final String itemId, final TaskType type) {
         final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
                 .child(CHILD_BACKLOG_ITEMS);
@@ -351,7 +351,7 @@ public class DatabaseService {
                 });
     }
 
-    public void inviteMember(String email, final String projectId, final List<String> memberIds, final List<String> projectIds) {
+    public void inviteMember(String email, final String projectId, final List<String> memberIds) {
         Log.d("DEBUG EMAIL", email);
 
         databaseReference.child(CHILD_USERS)
@@ -364,9 +364,6 @@ public class DatabaseService {
                             String newMemberId = userSnapshot.getKey();
                             String projectIdIndex = String.valueOf(userSnapshot.getChildrenCount());
 
-                            Log.d("DEBUG newMemberId", newMemberId);
-
-                            //projectIds.add(projectId);
                             databaseReference.child(CHILD_USERS)
                                     .child(newMemberId)
                                     .child(CHILD_PROJECTS)
