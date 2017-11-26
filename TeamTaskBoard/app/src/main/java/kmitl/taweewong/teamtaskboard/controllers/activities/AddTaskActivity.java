@@ -54,6 +54,7 @@ public class AddTaskActivity extends AppCompatActivity {
         Task newTask = new Task();
         newTask.setTitle(taskTitle);
         newTask.setDescription(taskDescription);
+        newTask.setId(databaseService.generateIdKey());
 
         taskList.add(newTask);
 
