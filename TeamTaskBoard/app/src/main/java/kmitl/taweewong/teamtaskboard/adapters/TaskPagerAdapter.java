@@ -26,11 +26,11 @@ public class TaskPagerAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return ShowTasksFragment.newInstance(tasks.getTodoTasks(), projectId, itemId, todoTasks);
+                return ShowTasksFragment.newInstance(projectId, itemId, todoTasks);
             case 1:
-                return ShowTasksFragment.newInstance(tasks.getDoingTasks(), projectId, itemId, doingTasks);
+                return ShowTasksFragment.newInstance(projectId, itemId, doingTasks);
             default:
-                return ShowTasksFragment.newInstance(tasks.getDoneTasks(), projectId, itemId, doneTasks);
+                return ShowTasksFragment.newInstance(projectId, itemId, doneTasks);
         }
     }
 

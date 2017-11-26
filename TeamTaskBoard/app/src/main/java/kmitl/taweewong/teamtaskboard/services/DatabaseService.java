@@ -93,7 +93,7 @@ public class DatabaseService {
                 .child(CHILD_BACKLOG_ITEMS);
 
         itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Tasks tasks = new Tasks();
@@ -182,8 +182,7 @@ public class DatabaseService {
         });
     }
 
-    public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
-        backlogItems.remove(position);
+    public void deleteBacklogItem(String projectId, List<BacklogItem> backlogItems) {
         databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
                 .child(CHILD_BACKLOG_ITEMS)
