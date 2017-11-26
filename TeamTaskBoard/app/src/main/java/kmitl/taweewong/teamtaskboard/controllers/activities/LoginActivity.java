@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
 
     @Override
     public void onUnauthorized() {
-        Toast.makeText(this, "You haven't login yet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please Login with your Facebook", Toast.LENGTH_SHORT).show();
         progressSpinner.dismiss();
     }
 
