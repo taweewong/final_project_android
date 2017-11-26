@@ -49,7 +49,10 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     TaskItemAdapter taskItemAdapter;
 
     public static final int ADD_TASK_REQUEST_CODE = 255;
+    public static final int ADD_TASK_RESPONSE_CODE = 256;
     public static final int EDIT_TASK_REQUEST_CODE = 355;
+    public static final int EDIT_TASK_RESPONSE_CODE = 356;
+    public static final int DELETE_TASK_RESPONSE_CODE = 357;
 
     public ShowTasksFragment() {
         // Required empty public constructor
@@ -184,11 +187,14 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode) {
-            case ADD_TASK_REQUEST_CODE:
+            case ADD_TASK_RESPONSE_CODE:
                 notifyAddTask(data);
                 break;
-            case EDIT_TASK_REQUEST_CODE:
+            case EDIT_TASK_RESPONSE_CODE:
                 notifyEditTask(data);
+                break;
+            case DELETE_TASK_RESPONSE_CODE:
+                notifyDeleteTask(data);
         }
     }
 
@@ -209,6 +215,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         intent.putExtra(PROJECT_ID_KEY, projectId);
         intent.putExtra(ITEM_ID_KEY, itemId);
         intent.putExtra(POSITION_KEY, position);
+        intent.putExtra(TASK_LIST_KEY, tasks);
 
         startActivityForResult(intent, EDIT_TASK_REQUEST_CODE);
     }
@@ -225,6 +232,15 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
 
         if (position != -1) {
             tasks.set(position, editedTask);
+            taskItemAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void notifyDeleteTask(Intent data) {
+        int position = data.getIntExtra(POSITION_KEY, -1);
+
+        if (position != -1) {
+            tasks.remove(position);
             taskItemAdapter.notifyDataSetChanged();
         }
     }
