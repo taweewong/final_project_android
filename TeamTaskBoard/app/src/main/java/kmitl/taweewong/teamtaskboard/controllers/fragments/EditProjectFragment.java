@@ -125,7 +125,7 @@ public class EditProjectFragment extends Fragment implements DatabaseService.OnQ
         dialogBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                inviteMember(addMemberEditText.getText().toString(), projectId, memberIds, projectIds);
+                inviteMember(addMemberEditText.getText().toString(), projectId, memberIds);
 
             }
         });
@@ -156,8 +156,8 @@ public class EditProjectFragment extends Fragment implements DatabaseService.OnQ
         this.listener = listener;
     }
 
-    private void inviteMember(String email, String projectId, List<String> memberIds, List<String> projectIds) {
+    private void inviteMember(String email, String projectId, List<String> memberIds) {
         DatabaseService databaseService = new DatabaseService();
-        databaseService.inviteMember(email, projectId, memberIds, projectIds);
+        databaseService.inviteMember(email, projectId, memberIds);
     }
 }
