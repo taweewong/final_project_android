@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
-import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;

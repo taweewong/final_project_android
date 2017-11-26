@@ -27,9 +27,9 @@ import kmitl.taweewong.teamtaskboard.adapters.TaskItemAdapter;
 import kmitl.taweewong.teamtaskboard.controllers.activities.AddTaskActivity;
 import kmitl.taweewong.teamtaskboard.controllers.activities.EditTaskActivity;
 import kmitl.taweewong.teamtaskboard.models.Task;
+import kmitl.taweewong.teamtaskboard.models.Tasks;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
-import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.EDITED_TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.POSITION_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;
@@ -38,7 +38,8 @@ import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_TYPE_KEY;
 import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType;
 
-public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnClickTaskListener {
+public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnClickTaskListener,
+        DatabaseService.OnQueryTasksCompleteListener {
 
     @BindView(R.id.showTasksRecyclerView) RecyclerView recyclerView;
 
@@ -58,9 +59,8 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         // Required empty public constructor
     }
 
-    public static ShowTasksFragment newInstance(ArrayList<Task> tasks, String projectId, String itemId, TaskType type) {
+    public static ShowTasksFragment newInstance(String projectId, String itemId, TaskType type) {
         Bundle args = new Bundle();
-        args.putParcelableArrayList(TASK_LIST_KEY, tasks);
         args.putString(PROJECT_ID_KEY, projectId);
         args.putString(ITEM_ID_KEY, itemId);
         args.putString(TASK_TYPE_KEY, type.name());
@@ -74,10 +74,13 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        tasks = getArguments().getParcelableArrayList(TASK_LIST_KEY);
+        tasks = new ArrayList<>();
         projectId = getArguments().getString(PROJECT_ID_KEY);
         itemId = getArguments().getString(ITEM_ID_KEY);
         taskType = TaskType.valueOf(getArguments().getString(TASK_TYPE_KEY));
+
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.queryTasks(projectId, itemId, this);
     }
 
     @Override
@@ -139,7 +142,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                int swipeFlags = 0;
                 return makeMovementFlags(dragFlags, swipeFlags);
             }
 
@@ -158,13 +161,12 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
 
                 if (isDropItem()) {
                     databaseService.updateTaskItems(tasks, projectId, itemId, taskType);
-                    Toast.makeText(getContext(), "moved", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Toast.makeText(getContext(), "on swipe", Toast.LENGTH_SHORT).show();
+
             }
 
             private boolean isDropItem() {
@@ -181,21 +183,6 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     @Override
     public void onLongClickTask(int position) {
         startEditTaskActivity(tasks.get(position), position);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case ADD_TASK_RESPONSE_CODE:
-                notifyAddTask(data);
-                break;
-            case EDIT_TASK_RESPONSE_CODE:
-                notifyEditTask(data);
-                break;
-            case DELETE_TASK_RESPONSE_CODE:
-                notifyDeleteTask(data);
-        }
     }
 
     private void startAddTaskActivity() {
@@ -217,31 +204,29 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         intent.putExtra(POSITION_KEY, position);
         intent.putExtra(TASK_LIST_KEY, tasks);
 
-        startActivityForResult(intent, EDIT_TASK_REQUEST_CODE);
+        startActivity(intent);
     }
 
-    private void notifyAddTask(Intent data) {
-        Task newTask = data.getParcelableExtra(TASK_KEY);
-        tasks.add(newTask);
+    @Override
+    public void onQueryTasksItemsSuccess(Tasks tasks) {
+        this.tasks.clear();
+
+        switch (taskType) {
+            case todoTasks:
+                this.tasks.addAll(tasks.getTodoTasks());
+                break;
+            case doingTasks:
+                this.tasks.addAll(tasks.getDoingTasks());
+                break;
+            case doneTasks:
+                this.tasks.addAll(tasks.getDoneTasks());
+        }
+
         taskItemAdapter.notifyDataSetChanged();
     }
 
-    private void notifyEditTask(Intent data) {
-        Task editedTask = data.getParcelableExtra(EDITED_TASK_KEY);
-        int position = data.getIntExtra(POSITION_KEY, -1);
+    @Override
+    public void onQueryTasksItemsFailed() {
 
-        if (position != -1) {
-            tasks.set(position, editedTask);
-            taskItemAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void notifyDeleteTask(Intent data) {
-        int position = data.getIntExtra(POSITION_KEY, -1);
-
-        if (position != -1) {
-            tasks.remove(position);
-            taskItemAdapter.notifyDataSetChanged();
-        }
     }
 }

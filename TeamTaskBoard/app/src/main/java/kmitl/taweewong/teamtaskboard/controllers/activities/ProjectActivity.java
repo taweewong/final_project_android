@@ -133,7 +133,11 @@ public class ProjectActivity extends AppCompatActivity implements
                         R.anim.slide_in_from_left,
                         R.anim.slide_out_to_right)
                 .replace(R.id.projectFragmentContainer,
-                        EditProjectFragment.newInstance(project.getProjectId(), project.getName(), position))
+                        EditProjectFragment.newInstance(project.getProjectId(),
+                                project.getName(),
+                                position,
+                                project.getMembers(),
+                                user.getProjects()))
                 .addToBackStack(null)
                 .commit();
     }

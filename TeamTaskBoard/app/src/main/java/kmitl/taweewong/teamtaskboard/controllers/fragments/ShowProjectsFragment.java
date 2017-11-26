@@ -14,8 +14,8 @@ import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter;
-import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.adapters.ProjectItemAdapter.OnClickProjectListener;
+import kmitl.taweewong.teamtaskboard.models.Project;
 
 import static kmitl.taweewong.teamtaskboard.models.Project.PROJECT_CLASS_KEY;
 

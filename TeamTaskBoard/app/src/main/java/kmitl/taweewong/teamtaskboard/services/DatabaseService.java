@@ -1,5 +1,7 @@
 package kmitl.taweewong.teamtaskboard.services;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +16,7 @@ import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.models.Tasks;
+import kmitl.taweewong.teamtaskboard.models.User;
 
 import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType;
 
@@ -34,6 +37,11 @@ public class DatabaseService {
         void onQueryTasksItemsFailed();
     }
 
+    public interface OnQueryMembersCompleteListener {
+        void onQueryMembersSuccess(List<String> memberNames);
+        void onQueryMembersFailed();
+    }
+
     private DatabaseReference databaseReference;
 
     private static final String CHILD_USERS = "users";
@@ -42,6 +50,9 @@ public class DatabaseService {
     private static final String CHILD_BACKLOG_ITEMS = "backlogItems";
     private static final String CHILD_ID_KEY = "id";
     private static final String CHILD_TASKS = "tasks";
+    private static final String CHILD_MEMBERS = "members";
+    private static final String CHILD_EMAIL = "email";
+
 
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -69,7 +80,7 @@ public class DatabaseService {
 
     public void queryBacklogItems(final String projectId, final OnQueryBacklogItemsCompleteListener listener) {
         databaseReference.child(CHILD_PROJECTS).child(projectId).child(CHILD_BACKLOG_ITEMS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ArrayList<BacklogItem> backlogItems = new ArrayList<>();
@@ -93,7 +104,7 @@ public class DatabaseService {
                 .child(CHILD_BACKLOG_ITEMS);
 
         itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Tasks tasks = new Tasks();
@@ -111,6 +122,27 @@ public class DatabaseService {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         listener.onQueryTasksItemsFailed();
+                    }
+                });
+    }
+
+    public void queryMembers(final List<String> memberIds, final OnQueryMembersCompleteListener listener) {
+        databaseReference.child(CHILD_USERS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    List<String> memberNames = new ArrayList<>();
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (String id: memberIds) {
+                            User queryUser = dataSnapshot.child(id).getValue(User.class);
+                            memberNames.add(String.format("%s %s", queryUser.getFirstName(), queryUser.getLastName()));
+                        }
+                        listener.onQueryMembersSuccess(memberNames);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onQueryMembersFailed();
                     }
                 });
     }
@@ -182,8 +214,7 @@ public class DatabaseService {
         });
     }
 
-    public void deleteBacklogItem(String projectId, int position, List<BacklogItem> backlogItems) {
-        backlogItems.remove(position);
+    public void deleteBacklogItem(String projectId, List<BacklogItem> backlogItems) {
         databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
                 .child(CHILD_BACKLOG_ITEMS)
@@ -296,7 +327,7 @@ public class DatabaseService {
                 });
     }
 
-    public void deleteTask(final List<Task> deletedTasks, final String taskId, String projectId, final String itemId, final TaskType type) {
+    public void deleteTask(final List<Task> deletedTasks, String projectId, final String itemId, final TaskType type) {
         final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
                 .child(projectId)
                 .child(CHILD_BACKLOG_ITEMS);
@@ -310,6 +341,38 @@ public class DatabaseService {
                                     .child(CHILD_TASKS)
                                     .child(type.name())
                                     .setValue(deletedTasks);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void inviteMember(String email, final String projectId, final List<String> memberIds) {
+        databaseReference.child(CHILD_USERS)
+                .orderByChild(CHILD_EMAIL)
+                .equalTo(email)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                            String newMemberId = userSnapshot.getKey();
+                            String projectIdIndex = String.valueOf(userSnapshot.getChildrenCount());
+
+                            databaseReference.child(CHILD_USERS)
+                                    .child(newMemberId)
+                                    .child(CHILD_PROJECTS)
+                                    .child(projectIdIndex)
+                                    .setValue(projectId);
+
+                            memberIds.add(newMemberId);
+                            databaseReference.child(CHILD_PROJECTS)
+                                    .child(projectId)
+                                    .child(CHILD_MEMBERS)
+                                    .setValue(memberIds);
                         }
                     }
 

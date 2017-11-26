@@ -21,12 +21,10 @@ import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowBacklogItemsFragm
 import kmitl.taweewong.teamtaskboard.models.BacklogItem;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.models.Tasks;
-import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.models.Tasks.TASKS_CLASS_KEY;
 
 public class BacklogItemActivity extends AppCompatActivity implements
-        DatabaseService.OnQueryBacklogItemsCompleteListener,
         AddBacklogItemFragment.OnAddBacklogItemCompleteListener,
         BacklogItemAdapter.OnClickBacklogItemListener,
         EditBacklogItemFragment.OnEditBacklogItemCompleteListener {
@@ -42,9 +40,8 @@ public class BacklogItemActivity extends AppCompatActivity implements
         setTitle(String.format("%s's backlog items", project.getName()));
 
         projectId = project.getProjectId();
-
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.queryBacklogItems(projectId, this);
+        backlogItems = new ArrayList<>();
+        initializeFragment();
     }
 
     @Override
@@ -70,17 +67,6 @@ public class BacklogItemActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onQueryBacklogItemsSuccess(ArrayList<BacklogItem> backlogItems) {
-        this.backlogItems = backlogItems;
-        initializeFragment();
-    }
-
-    @Override
-    public void onQueryBacklogItemsFailed() {
-        Toast.makeText(this, "Query Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onAddBacklogItemComplete(BacklogItem backlogItem) {
         getSupportFragmentManager().popBackStack();
     }
@@ -89,7 +75,6 @@ public class BacklogItemActivity extends AppCompatActivity implements
     public void onClickBacklogItem(int position) {
         BacklogItem selectedItem = backlogItems.get(position);
         startTaskActivity(selectedItem.getTasks(), selectedItem.getId());
-        Toast.makeText(this, "click " + backlogItems.get(position).getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -98,7 +83,7 @@ public class BacklogItemActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onEditBacklogItemComplete(int position, BacklogItem editedBacklogItem) {
+    public void onEditBacklogItemComplete(int position) {
         getSupportFragmentManager().popBackStack();
     }
 
