@@ -99,7 +99,7 @@ public class ShowBacklogItemsFragment extends Fragment implements DatabaseServic
            @Override
            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-               int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+               int swipeFlags = 0;
                return makeMovementFlags(dragFlags, swipeFlags);
            }
 
@@ -118,13 +118,12 @@ public class ShowBacklogItemsFragment extends Fragment implements DatabaseServic
 
                if (isDropItem()) {
                    databaseService.updateBacklogItems(backlogItems, projectId);
-                   Toast.makeText(getContext(), "moved", Toast.LENGTH_SHORT).show();
                }
            }
 
            @Override
            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-               Toast.makeText(getContext(), "on swipe", Toast.LENGTH_SHORT).show();
+
            }
 
            private boolean isDropItem() {

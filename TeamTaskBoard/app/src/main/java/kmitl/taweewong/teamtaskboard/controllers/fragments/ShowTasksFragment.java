@@ -142,7 +142,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                int swipeFlags = 0;
                 return makeMovementFlags(dragFlags, swipeFlags);
             }
 
@@ -161,13 +161,12 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
 
                 if (isDropItem()) {
                     databaseService.updateTaskItems(tasks, projectId, itemId, taskType);
-                    Toast.makeText(getContext(), "moved", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Toast.makeText(getContext(), "on swipe", Toast.LENGTH_SHORT).show();
+
             }
 
             private boolean isDropItem() {

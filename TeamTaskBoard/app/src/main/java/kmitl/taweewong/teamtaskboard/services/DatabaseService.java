@@ -352,8 +352,6 @@ public class DatabaseService {
     }
 
     public void inviteMember(String email, final String projectId, final List<String> memberIds) {
-        Log.d("DEBUG EMAIL", email);
-
         databaseReference.child(CHILD_USERS)
                 .orderByChild(CHILD_EMAIL)
                 .equalTo(email)

@@ -75,7 +75,6 @@ public class BacklogItemActivity extends AppCompatActivity implements
     public void onClickBacklogItem(int position) {
         BacklogItem selectedItem = backlogItems.get(position);
         startTaskActivity(selectedItem.getTasks(), selectedItem.getId());
-        Toast.makeText(this, "click " + backlogItems.get(position).getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
