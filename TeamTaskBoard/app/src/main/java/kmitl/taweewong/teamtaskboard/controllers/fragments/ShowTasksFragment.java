@@ -25,10 +25,13 @@ import butterknife.ButterKnife;
 import kmitl.taweewong.teamtaskboard.R;
 import kmitl.taweewong.teamtaskboard.adapters.TaskItemAdapter;
 import kmitl.taweewong.teamtaskboard.controllers.activities.AddTaskActivity;
+import kmitl.taweewong.teamtaskboard.controllers.activities.EditTaskActivity;
 import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.EDITED_TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
+import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.POSITION_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_LIST_KEY;
@@ -46,6 +49,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     TaskItemAdapter taskItemAdapter;
 
     public static final int ADD_TASK_REQUEST_CODE = 255;
+    public static final int EDIT_TASK_REQUEST_CODE = 355;
 
     public ShowTasksFragment() {
         // Required empty public constructor
@@ -173,17 +177,18 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
 
     @Override
     public void onLongClickTask(int position) {
-
+        startEditTaskActivity(tasks.get(position), position);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == ADD_TASK_REQUEST_CODE) {
-            Task newTask = data.getParcelableExtra(TASK_KEY);
-
-            tasks.add(newTask);
-            taskItemAdapter.notifyDataSetChanged();
+        switch (resultCode) {
+            case ADD_TASK_REQUEST_CODE:
+                notifyAddTask(data);
+                break;
+            case EDIT_TASK_REQUEST_CODE:
+                notifyEditTask(data);
         }
     }
 
@@ -195,5 +200,32 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         intent.putExtra(ITEM_ID_KEY, itemId);
 
         startActivityForResult(intent, ADD_TASK_REQUEST_CODE);
+    }
+
+    private void startEditTaskActivity(Task task, int position) {
+        Intent intent = new Intent(getContext(), EditTaskActivity.class);
+        intent.putExtra(TASK_TYPE_KEY, taskType.name());
+        intent.putExtra(TASK_KEY, task);
+        intent.putExtra(PROJECT_ID_KEY, projectId);
+        intent.putExtra(ITEM_ID_KEY, itemId);
+        intent.putExtra(POSITION_KEY, position);
+
+        startActivityForResult(intent, EDIT_TASK_REQUEST_CODE);
+    }
+
+    private void notifyAddTask(Intent data) {
+        Task newTask = data.getParcelableExtra(TASK_KEY);
+        tasks.add(newTask);
+        taskItemAdapter.notifyDataSetChanged();
+    }
+
+    private void notifyEditTask(Intent data) {
+        Task editedTask = data.getParcelableExtra(EDITED_TASK_KEY);
+        int position = data.getIntExtra(POSITION_KEY, -1);
+
+        if (position != -1) {
+            tasks.set(position, editedTask);
+            taskItemAdapter.notifyDataSetChanged();
+        }
     }
 }
