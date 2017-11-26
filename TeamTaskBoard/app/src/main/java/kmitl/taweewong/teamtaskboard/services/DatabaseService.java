@@ -296,6 +296,30 @@ public class DatabaseService {
                 });
     }
 
+    public void deleteTask(final List<Task> deletedTasks, final String taskId, String projectId, final String itemId, final TaskType type) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                            itemRef.child(itemSnapshot.getKey())
+                                    .child(CHILD_TASKS)
+                                    .child(type.name())
+                                    .setValue(deletedTasks);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
     public String generateIdKey() {
         return databaseReference.push().getKey();
     }
