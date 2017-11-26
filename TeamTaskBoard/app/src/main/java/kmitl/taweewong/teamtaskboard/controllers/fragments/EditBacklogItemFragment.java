@@ -114,7 +114,14 @@ public class EditBacklogItemFragment extends Fragment {
 
     private void deleteBacklogItem() {
         DatabaseService databaseService = new DatabaseService();
-        databaseService.deleteBacklogItem(projectId, position, backlogItems);
+
+        try {
+            backlogItems.remove(position);
+            databaseService.deleteBacklogItem(projectId, backlogItems);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         listener.onDeleteBacklogItemComplete(position);
     }
 
