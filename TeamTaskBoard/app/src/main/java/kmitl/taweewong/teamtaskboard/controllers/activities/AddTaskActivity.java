@@ -20,7 +20,7 @@ import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_LIST_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_TYPE_KEY;
-import static kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment.ADD_TASK_REQUEST_CODE;
+import static kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment.ADD_TASK_RESPONSE_CODE;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -72,7 +72,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private void sendDataBackToCaller(Task newTask) {
         Intent result = new Intent();
         result.putExtra(TASK_KEY, newTask);
-        setResult(ADD_TASK_REQUEST_CODE, result);
+        setResult(ADD_TASK_RESPONSE_CODE, result);
         finish();
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }
