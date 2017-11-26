@@ -35,6 +35,8 @@ public class TaskActivity extends AppCompatActivity implements
     public static final String ITEM_ID_KEY = "itemId";
     public static final String TASK_TYPE_KEY = "taskType";
     public static final String TASK_KEY = "task";
+    public static final String EDITED_TASK_KEY = "editedTask";
+    public static final String POSITION_KEY = "position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
