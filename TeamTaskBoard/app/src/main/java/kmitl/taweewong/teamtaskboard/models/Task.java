@@ -4,19 +4,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Task implements Parcelable {
+    private String id;
     private String title;
     private String description;
 
     public Task() {
     }
 
-    private Task(Parcel in) {
+    protected Task(Parcel in) {
+        id = in.readString();
         title = in.readString();
         description = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
     }
@@ -37,6 +40,14 @@ public class Task implements Parcelable {
             return new Task[size];
         }
     };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

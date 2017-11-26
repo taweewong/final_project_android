@@ -227,4 +227,100 @@ public class DatabaseService {
                     }
                 });
     }
+
+    public void addTask(final List<Task> tasks, String projectId, final String itemId, final TaskType type) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                            itemRef.child(snapshot.getKey())
+                                    .child(CHILD_TASKS)
+                                    .child(type.name())
+                                    .setValue(tasks);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void editTask(final Task task, String projectId, final String itemId, final TaskType type) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        DatabaseReference taskRef;
+
+                        for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                            taskRef = itemRef.child(itemSnapshot.getKey())
+                                    .child(CHILD_TASKS)
+                                    .child(type.name());
+                            putEditedTaskToFirebase(taskRef, task);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void putEditedTaskToFirebase(final DatabaseReference taskRef, final Task task) {
+        taskRef.orderByChild(CHILD_ID_KEY).equalTo(task.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot taskSnapshot: dataSnapshot.getChildren()) {
+                            taskRef.child(taskSnapshot.getKey())
+                                    .setValue(task);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void deleteTask(final List<Task> deletedTasks, final String taskId, String projectId, final String itemId, final TaskType type) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot itemSnapshot: dataSnapshot.getChildren()) {
+                            itemRef.child(itemSnapshot.getKey())
+                                    .child(CHILD_TASKS)
+                                    .child(type.name())
+                                    .setValue(deletedTasks);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public String generateIdKey() {
+        return databaseReference.push().getKey();
+    }
 }
