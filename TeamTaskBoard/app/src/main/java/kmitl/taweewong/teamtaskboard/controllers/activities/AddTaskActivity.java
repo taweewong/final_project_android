@@ -1,6 +1,5 @@
 package kmitl.taweewong.teamtaskboard.controllers.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
@@ -17,10 +16,8 @@ import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;
-import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_LIST_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_TYPE_KEY;
-import static kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment.ADD_TASK_RESPONSE_CODE;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -57,10 +54,8 @@ public class AddTaskActivity extends AppCompatActivity {
         newTask.setId(databaseService.generateIdKey());
 
         taskList.add(newTask);
-
         databaseService.addTask(taskList, projectId, itemId, taskType);
-
-        sendDataBackToCaller(newTask);
+        finishAddTaskActivity();
     }
 
     @Override
@@ -69,10 +64,7 @@ public class AddTaskActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }
 
-    private void sendDataBackToCaller(Task newTask) {
-        Intent result = new Intent();
-        result.putExtra(TASK_KEY, newTask);
-        setResult(ADD_TASK_RESPONSE_CODE, result);
+    private void finishAddTaskActivity() {
         finish();
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }

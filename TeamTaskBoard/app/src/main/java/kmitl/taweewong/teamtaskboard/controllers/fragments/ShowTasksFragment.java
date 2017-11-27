@@ -47,13 +47,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     private String projectId;
     private String itemId;
     private TaskType taskType;
-    TaskItemAdapter taskItemAdapter;
-
-    public static final int ADD_TASK_REQUEST_CODE = 255;
-    public static final int ADD_TASK_RESPONSE_CODE = 256;
-    public static final int EDIT_TASK_REQUEST_CODE = 355;
-    public static final int EDIT_TASK_RESPONSE_CODE = 356;
-    public static final int DELETE_TASK_RESPONSE_CODE = 357;
+    private TaskItemAdapter taskItemAdapter;
 
     public ShowTasksFragment() {
         // Required empty public constructor
