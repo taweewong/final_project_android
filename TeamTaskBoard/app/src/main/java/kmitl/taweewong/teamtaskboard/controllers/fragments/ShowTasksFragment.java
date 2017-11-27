@@ -80,7 +80,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         taskType = TaskType.valueOf(getArguments().getString(TASK_TYPE_KEY));
 
         DatabaseService databaseService = new DatabaseService();
-        databaseService.queryTasks(projectId, itemId, this);
+        databaseService.updateTasks(projectId, itemId, this);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         intent.putExtra(PROJECT_ID_KEY, projectId);
         intent.putExtra(ITEM_ID_KEY, itemId);
 
-        startActivityForResult(intent, ADD_TASK_REQUEST_CODE);
+        startActivity(intent);
     }
 
     private void startEditTaskActivity(Task task, int position) {
