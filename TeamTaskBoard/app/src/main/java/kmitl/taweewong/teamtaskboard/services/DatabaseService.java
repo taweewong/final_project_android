@@ -104,6 +104,34 @@ public class DatabaseService {
                 .child(CHILD_BACKLOG_ITEMS);
 
         itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Tasks tasks = new Tasks();
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                            tasks = snapshot.child(CHILD_TASKS).getValue(Tasks.class);
+                        }
+
+                        if (tasks == null) {
+                            tasks = new Tasks();
+                        }
+
+                        listener.onQueryTasksItemsSuccess(tasks);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onQueryTasksItemsFailed();
+                    }
+                });
+    }
+
+    public void updateTasks(String projectId, String itemId, final OnQueryTasksCompleteListener listener) {
+        final DatabaseReference itemRef = databaseReference.child(CHILD_PROJECTS)
+                .child(projectId)
+                .child(CHILD_BACKLOG_ITEMS);
+
+        itemRef.orderByChild(CHILD_ID_KEY).equalTo(itemId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,7 +163,9 @@ public class DatabaseService {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (String id: memberIds) {
                             User queryUser = dataSnapshot.child(id).getValue(User.class);
-                            memberNames.add(String.format("%s %s", queryUser.getFirstName(), queryUser.getLastName()));
+                            if (queryUser != null) {
+                                memberNames.add(String.format("%s %s", queryUser.getFirstName(), queryUser.getLastName()));
+                            }
                         }
                         listener.onQueryMembersSuccess(memberNames);
                     }

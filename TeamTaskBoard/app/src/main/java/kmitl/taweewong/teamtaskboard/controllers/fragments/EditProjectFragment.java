@@ -40,13 +40,11 @@ public class EditProjectFragment extends Fragment implements DatabaseService.OnQ
     private int position;
     private OnEditProjectCompleteListener listener;
     private List<String> memberIds;
-    private List<String> projectIds;
 
     private static String PROJECT_ID_KEY = "projectId";
     private static String PROJECT_NAME_KEY = "projectName";
     private static String POSITION_KEY = "position";
     private static String MEMBER_KEY = "member";
-    private static String PROJECT_IDS_KEY = "projectIds";
 
     public EditProjectFragment() {
         // Required empty public constructor
@@ -55,14 +53,12 @@ public class EditProjectFragment extends Fragment implements DatabaseService.OnQ
     public static EditProjectFragment newInstance(String projectId,
                                                   String projectName,
                                                   int position,
-                                                  List<String> memberIds,
-                                                  List<String> projectIds) {
+                                                  List<String> memberIds) {
         Bundle args = new Bundle();
         args.putString(PROJECT_ID_KEY, projectId);
         args.putString(PROJECT_NAME_KEY, projectName);
         args.putInt(POSITION_KEY, position);
         args.putStringArrayList(MEMBER_KEY, (ArrayList<String>) memberIds);
-        args.putStringArrayList(PROJECT_IDS_KEY, (ArrayList<String>) projectIds);
 
         EditProjectFragment fragment = new EditProjectFragment();
         fragment.setArguments(args);
@@ -77,7 +73,6 @@ public class EditProjectFragment extends Fragment implements DatabaseService.OnQ
         projectName = getArguments().getString(PROJECT_NAME_KEY);
         position = getArguments().getInt(POSITION_KEY);
         memberIds = getArguments().getStringArrayList(MEMBER_KEY);
-        projectIds = getArguments().getStringArrayList(PROJECT_IDS_KEY);
         setOnEditProjectCompleteListener((OnEditProjectCompleteListener) getActivity());
     }
 

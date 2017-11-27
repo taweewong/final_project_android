@@ -82,7 +82,7 @@ public class TaskActivity extends AppCompatActivity implements
 
     private void initializeTab() {
         setSupportActionBar(toolbar);
-        TaskPagerAdapter taskPagerAdapter = new TaskPagerAdapter(getSupportFragmentManager(), tasks, projectId, itemId);
+        TaskPagerAdapter taskPagerAdapter = new TaskPagerAdapter(getSupportFragmentManager(), projectId, itemId);
         viewPager.setAdapter(taskPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white));
