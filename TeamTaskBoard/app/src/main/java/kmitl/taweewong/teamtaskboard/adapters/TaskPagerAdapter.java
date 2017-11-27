@@ -5,19 +5,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment;
-import kmitl.taweewong.teamtaskboard.models.Tasks;
 
-import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType.*;
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType.doingTasks;
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType.doneTasks;
+import static kmitl.taweewong.teamtaskboard.models.Tasks.TaskType.todoTasks;
 
 public class TaskPagerAdapter extends FragmentPagerAdapter{
 
-    private Tasks tasks;
     private String projectId;
     private String itemId;
 
-    public TaskPagerAdapter(FragmentManager fm, Tasks tasks, String projectId, String itemId) {
+    public TaskPagerAdapter(FragmentManager fm, String projectId, String itemId) {
         super(fm);
-        this.tasks = tasks;
         this.projectId = projectId;
         this.itemId = itemId;
     }

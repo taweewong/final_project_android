@@ -47,13 +47,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
     private String projectId;
     private String itemId;
     private TaskType taskType;
-    TaskItemAdapter taskItemAdapter;
-
-    public static final int ADD_TASK_REQUEST_CODE = 255;
-    public static final int ADD_TASK_RESPONSE_CODE = 256;
-    public static final int EDIT_TASK_REQUEST_CODE = 355;
-    public static final int EDIT_TASK_RESPONSE_CODE = 356;
-    public static final int DELETE_TASK_RESPONSE_CODE = 357;
+    private TaskItemAdapter taskItemAdapter;
 
     public ShowTasksFragment() {
         // Required empty public constructor
@@ -80,7 +74,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         taskType = TaskType.valueOf(getArguments().getString(TASK_TYPE_KEY));
 
         DatabaseService databaseService = new DatabaseService();
-        databaseService.queryTasks(projectId, itemId, this);
+        databaseService.updateTasks(projectId, itemId, this);
     }
 
     @Override
@@ -192,7 +186,7 @@ public class ShowTasksFragment extends Fragment implements TaskItemAdapter.OnCli
         intent.putExtra(PROJECT_ID_KEY, projectId);
         intent.putExtra(ITEM_ID_KEY, itemId);
 
-        startActivityForResult(intent, ADD_TASK_REQUEST_CODE);
+        startActivity(intent);
     }
 
     private void startEditTaskActivity(Task task, int position) {

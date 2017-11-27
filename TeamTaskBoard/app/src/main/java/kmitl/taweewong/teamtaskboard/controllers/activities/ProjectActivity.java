@@ -136,8 +136,7 @@ public class ProjectActivity extends AppCompatActivity implements
                         EditProjectFragment.newInstance(project.getProjectId(),
                                 project.getName(),
                                 position,
-                                project.getMembers(),
-                                user.getProjects()))
+                                project.getMembers()))
                 .addToBackStack(null)
                 .commit();
     }

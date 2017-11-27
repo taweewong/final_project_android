@@ -1,6 +1,5 @@
 package kmitl.taweewong.teamtaskboard.controllers.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,15 +16,12 @@ import kmitl.taweewong.teamtaskboard.models.Task;
 import kmitl.taweewong.teamtaskboard.models.Tasks.TaskType;
 import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 
-import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.EDITED_TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.ITEM_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.POSITION_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.PROJECT_ID_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_LIST_KEY;
 import static kmitl.taweewong.teamtaskboard.controllers.activities.TaskActivity.TASK_TYPE_KEY;
-import static kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment.DELETE_TASK_RESPONSE_CODE;
-import static kmitl.taweewong.teamtaskboard.controllers.fragments.ShowTasksFragment.EDIT_TASK_RESPONSE_CODE;
 
 public class EditTaskActivity extends AppCompatActivity {
 
@@ -83,8 +79,7 @@ public class EditTaskActivity extends AppCompatActivity {
         task.setDescription(editedTaskDescription);
 
         databaseService.editTask(task, projectId, itemId, taskType);
-
-        sendEditedDataBackToCaller(task);
+        finishEditTaskActivity();
     }
 
     @Override
@@ -93,11 +88,7 @@ public class EditTaskActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }
 
-    private void sendEditedDataBackToCaller(Task editedTask) {
-        Intent result = new Intent();
-        result.putExtra(EDITED_TASK_KEY, editedTask);
-        result.putExtra(POSITION_KEY, position);
-        setResult(EDIT_TASK_RESPONSE_CODE, result);
+    private void finishEditTaskActivity() {
         finish();
         overridePendingTransition(R.anim.slide_in_from_left, R.anim.slide_out_to_right);
     }
