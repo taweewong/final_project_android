@@ -1,18 +1,14 @@
 package kmitl.taweewong.teamtaskboard.adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import kmitl.taweewong.teamtaskboard.R;
-import kmitl.taweewong.teamtaskboard.controllers.activities.BacklogItemActivity;
 import kmitl.taweewong.teamtaskboard.models.Project;
 import kmitl.taweewong.teamtaskboard.viewholders.ProjectItemViewHolder;
 
@@ -20,8 +16,8 @@ public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemViewHold
         View.OnClickListener, View.OnLongClickListener {
 
     public interface OnClickProjectListener {
-        void onClickProject(int position);
-        void onLongClickProject(int position);
+        void onClickProject(int position, List<Project> projects);
+        void onLongClickProject(int position, List<Project> projects);
     }
 
     private List<Project> projects;
@@ -64,13 +60,13 @@ public class ProjectItemAdapter extends RecyclerView.Adapter<ProjectItemViewHold
     @Override
     public void onClick(View view) {
         int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
-        listener.onClickProject(itemPosition);
+        listener.onClickProject(itemPosition, projects);
     }
 
     @Override
     public boolean onLongClick(View view) {
         int itemPosition = parentRecyclerView.getChildAdapterPosition(view);
-        listener.onLongClickProject(itemPosition);
+        listener.onLongClickProject(itemPosition, projects);
         return true;
     }
 }
