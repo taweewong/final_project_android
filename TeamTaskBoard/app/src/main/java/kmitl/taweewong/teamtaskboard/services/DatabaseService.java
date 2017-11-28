@@ -53,12 +53,33 @@ public class DatabaseService {
     private static final String CHILD_MEMBERS = "members";
     private static final String CHILD_EMAIL = "email";
 
-
     public DatabaseService() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void queryProjects(final List<String> projectIds, final OnQueryProjectsCompleteListener listener) {
+    public void queryProjects(String userId, final OnQueryProjectsCompleteListener listener) {
+        final ArrayList<String> projectIds = new ArrayList<>();
+
+        databaseReference.child(CHILD_USERS)
+                .child(userId)
+                .child(CHILD_PROJECTS)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot projectsSnapshot: dataSnapshot.getChildren()) {
+                            projectIds.add(projectsSnapshot.getValue(String.class));
+                        }
+                        pullUserProjects(projectIds, listener);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void pullUserProjects(final List<String> projectIds, final OnQueryProjectsCompleteListener listener) {
         final ArrayList<Project> projects = new ArrayList<>();
 
         databaseReference.child(CHILD_PROJECTS)
@@ -390,7 +411,7 @@ public class DatabaseService {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                             String newMemberId = userSnapshot.getKey();
-                            String projectIdIndex = String.valueOf(userSnapshot.getChildrenCount());
+                            String projectIdIndex = String.valueOf(userSnapshot.child(CHILD_PROJECTS).getChildrenCount());
 
                             databaseReference.child(CHILD_USERS)
                                     .child(newMemberId)

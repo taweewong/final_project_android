@@ -4,6 +4,7 @@
     package="kmitl.taweewong.teamtaskboard">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -41,14 +42,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.activities.ProjectActivity" />
-        <activity android:name=".controllers.activities.BacklogItemActivity" />
+        <activity android:name=".controllers.activities.ProjectActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".controllers.activities.BacklogItemActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".controllers.activities.TaskActivity"
             android:label="@string/title_activity_task"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".controllers.activities.AddTaskActivity" />
-        <activity android:name=".controllers.activities.EditTaskActivity"></activity>
+        <activity android:name=".controllers.activities.AddTaskActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".controllers.activities.EditTaskActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
