@@ -1,6 +1,9 @@
 package kmitl.taweewong.teamtaskboard.controllers.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -35,8 +38,12 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         loginService = new LoginService(this, callbackManager);
         progressSpinner = new ProgressSpinner(this);
 
-        progressSpinner.show();
-        loginService.verifyFacebookAuthentication(this);
+        if (isNetworkAvailable()) {
+            progressSpinner.show();
+            loginService.verifyFacebookAuthentication(this);
+        } else {
+            Toast.makeText(this, "please connect internet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -81,5 +88,14 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
         intent.putExtra(USER_CLASS_KEY, user);
         startActivity(intent);
         finish();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

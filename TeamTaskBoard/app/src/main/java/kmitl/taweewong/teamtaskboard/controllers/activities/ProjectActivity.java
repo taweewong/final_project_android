@@ -26,11 +26,9 @@ import kmitl.taweewong.teamtaskboard.services.DatabaseService;
 import static kmitl.taweewong.teamtaskboard.models.User.USER_CLASS_KEY;
 
 public class ProjectActivity extends AppCompatActivity implements
-        DatabaseService.OnQueryProjectsCompleteListener,
         AddProjectFragment.OnAddProjectCompleteListener,
         EditProjectFragment.OnEditProjectCompleteListener,
         ProjectItemAdapter.OnClickProjectListener {
-    private ArrayList<Project> projects;
     private User user;
 
     @Override
@@ -38,16 +36,9 @@ public class ProjectActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
         setTitle(getString(R.string.project_activity));
-
         user = getIntent().getParcelableExtra(USER_CLASS_KEY);
-        List<String> projectIds = new ArrayList<>();
 
-        if (user.getProjects() != null) {
-            projectIds = user.getProjects();
-        }
-
-        DatabaseService projectQueryService = new DatabaseService();
-        projectQueryService.queryProjects(projectIds, this);
+        initializeFragment();
     }
 
     @Override
@@ -72,43 +63,30 @@ public class ProjectActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onQueryProjectsSuccess(ArrayList<Project> projects) {
-        this.projects = projects;
-        initializeFragment(projects);
-    }
-
-    @Override
-    public void onQueryProjectsFailed() {
-        Toast.makeText(this, "Query Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onAddProjectComplete(Project project) {
-        this.projects.add(project);
         getSupportFragmentManager().popBackStack();
     }
 
     @Override
     public void onEditProjectComplete(int position, String editedProject) {
-        this.projects.get(position).setName(editedProject);
         getSupportFragmentManager().popBackStack();
     }
 
     @Override
-    public void onClickProject(int position) {
+    public void onClickProject(int position, List<Project> projects) {
         startBacklogItemActivity(projects.get(position));
     }
 
     @Override
-    public void onLongClickProject(int position) {
+    public void onLongClickProject(int position, List<Project> projects) {
         replaceEditProjectFragment(position, projects.get(position));
     }
 
-    private void initializeFragment(ArrayList<Project> projects) {
+    private void initializeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
-                .add(R.id.projectFragmentContainer, ShowProjectsFragment.newInstance(projects))
+                .add(R.id.projectFragmentContainer, ShowProjectsFragment.newInstance(user.getUserId()))
                 .commit();
     }
 
