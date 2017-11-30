@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity implements LoginService.OnL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().hide();
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
